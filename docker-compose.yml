@@ -3,9 +3,9 @@ services:
     image: ${DOCKER_REGISTRY-}gatewaywebapi
     build:
       context: .
-      dockerfile: Gateway.WebApi/Dockerfile
+      dockerfile: src/Gateway/Gateway.WebApi/Dockerfile
   user.webapi:
     image: ${DOCKER_REGISTRY-}userwebapi
     build:
       context: .
-      dockerfile: User.WebApi/Dockerfile
+      dockerfile: src/Services/User/User.WebApi/Dockerfile
