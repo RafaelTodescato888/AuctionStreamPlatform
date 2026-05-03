@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "GatewayWebApi": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "None",
+      "composeLaunchServiceName": "gateway.api",
+      "serviceActions": {
+        "gateway.webapi": "StartWithoutDebugging",
+        "user.webapi": "StartWithoutDebugging"
+      }
+    }
+  }
+}

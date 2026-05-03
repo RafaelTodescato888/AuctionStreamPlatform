@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Gateway/">
+    <Project Path="Gateway.WebApi/Gateway.WebApi.csproj" Id="8ba32d10-93a5-48c6-9898-d952ddbf8363" />
+  </Folder>
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/User/">
+    <Project Path="User.WebApi/User.WebApi.csproj" Id="d846b997-2229-4fce-9014-08aad0a3275b" />
+  </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+</Solution>
