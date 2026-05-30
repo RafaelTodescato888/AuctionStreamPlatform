@@ -1,9 +1,12 @@
 services:
   gateway.webapi:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - GATEWAY_API_PORT=${GATEWAY_API_PORT}
+      - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
+      - AppConfig__JwtSecret=${AppConfig__JwtSecret}
     ports:
-      - "5000:8080"
+      - "${GATEWAY_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -11,9 +14,33 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
   user.webapi:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - CONTEXT_DATA_SOURCE=${CONTEXT_DATA_SOURCE}
+      - REDIS_DATA_SOURCE=${REDIS_DATA_SOURCE}
+      - USER_API_PORT=${USER_API_PORT}
+      - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
+      - AppConfig__MaxBytes=${AppConfig__MaxBytes}
+      - AppConfig__LanesNumber=${AppConfig__LanesNumber}
+      - AppConfig__MemorySize=${AppConfig__MemorySize}
+      - AppConfig__Iterations=${AppConfig__Iterations}
+      - AppConfig__Hash=${AppConfig__Hash}
+      - AppConfig__JwtSecret=${AppConfig__JwtSecret}
+      - AppConfig__DefaultExpiration=${AppConfig__DefaultExpiration}
+      - AdminConfig__Name=${AdminConfig__Name}
+      - AdminConfig__Email=${AdminConfig__Email}
+      - AdminConfig__Document=${AdminConfig__Document}
+      - AdminConfig__Password=${AdminConfig__Password}
     ports:
-      - "5001:8080"
+      - "${USER_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  db:
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_DEFAULT_PORT}:${POSTGRES_DEFAULT_PORT}"
+  redis:
+    ports:
+      - "${REDIS_DEFAULT_PORT}:${REDIS_DEFAULT_PORT}"
