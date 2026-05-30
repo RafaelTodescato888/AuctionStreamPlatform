@@ -1,9 +1,11 @@
 services:
   gateway.webapi:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - GATEWAY_API_PORT=${GATEWAY_API_PORT}
+      - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
     ports:
-      - "5000:8080"
+      - "${GATEWAY_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
@@ -11,9 +13,17 @@ services:
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
   user.webapi:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - USER_API_PORT=${USER_API_PORT}
+      - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
     ports:
-      - "5001:8080"
+      - "${USER_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+  db:
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_DEFAULT_PORT}:${POSTGRES_DEFAULT_PORT}"

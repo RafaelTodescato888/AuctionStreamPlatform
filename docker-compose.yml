@@ -9,3 +9,15 @@ services:
     build:
       context: .
       dockerfile: src/Services/User/User.WebApi/Dockerfile
+  db:
+    image: postgres:18.3
+    volumes:
+      - db_data:/var/lib/postgresql
+    networks:
+      - server
+
+networks:
+  server:
+
+volumes:
+  db_data:

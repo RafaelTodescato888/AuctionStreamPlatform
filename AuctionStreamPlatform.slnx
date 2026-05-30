@@ -1,10 +1,15 @@
 <Solution>
-  <Folder Name="/src/" />
+  <Folder Name="/src/">
+    <Project Path="CrossCutting/CrossCutting.csproj" Id="2be23704-91ad-4dfe-a979-8309527f584f" />
+  </Folder>
   <Folder Name="/src/Gateway/">
     <Project Path="src/Gateway/Gateway.WebApi/Gateway.WebApi.csproj" />
   </Folder>
   <Folder Name="/src/Services/" />
   <Folder Name="/src/Services/User/">
+    <Project Path="src/Services/User/User.Application/User.Application.csproj" Id="fad0e5dc-eebd-4a99-ae4f-63fdf12f19d9" />
+    <Project Path="src/Services/User/User.Domain/User.Domain.csproj" />
+    <Project Path="src/Services/User/User.Infrastructure/User.Infrastructure.csproj" Id="2fc9b890-8805-4405-bd50-f82556564984" />
     <Project Path="src/Services/User/User.WebApi/User.WebApi.csproj" />
   </Folder>
   <Project Path="docker-compose.dcproj">

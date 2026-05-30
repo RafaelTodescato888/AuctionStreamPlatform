@@ -7,7 +7,7 @@
       "composeLaunchServiceName": "gateway.api",
       "serviceActions": {
         "gateway.webapi": "StartWithoutDebugging",
-        "user.webapi": "StartWithoutDebugging"
+        "user.webapi": "StartDebugging"
       }
     }
   }
