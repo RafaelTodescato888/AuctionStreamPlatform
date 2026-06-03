@@ -10,16 +10,16 @@ namespace Gateway.WebApi.Extensions.ReverseProxy.Service.User.Routes
             [
                 new RouteConfig
                 {
-                    RouteId = "user-weatherforecast",
+                    RouteId = "user-create",
                     ClusterId = "user-cluster",
                     Match = new RouteMatch
                     {
-                        Path = "/api/user/weatherforecast",
-                        Methods = ["GET"]
+                        Path = "/api/users/auth/register",
+                        Methods = ["POST"]
                     },
                     Transforms = [
                         new Dictionary<string, string> {
-                            { "PathPattern", "weatherforecast"}
+                            { "PathPattern", "auth/register"}
                         }
                     ]
                 }

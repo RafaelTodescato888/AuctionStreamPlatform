@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.UoW;
 using User.Infrastructure.Context;
@@ -7,10 +8,12 @@ namespace User.Infrastructure.UoW
 {
     internal sealed class UnitOfWork(
         AuctionStreamPlatformContext context,
-        IUsersProfileRepository usersProfileRepository
+        IUsersProfileRepository usersProfileRepository,
+        IUsersRepository usersRepository
     ) : IUnitOfWork
     {
         public IUsersProfileRepository UsersProfileRepository { get; private set; } = usersProfileRepository;
+        public IUsersRepository UserRepository { get; private set; } = usersRepository;
 
         public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct)
         {

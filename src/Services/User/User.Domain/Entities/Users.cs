@@ -6,5 +6,13 @@ namespace User.Domain.Entities
     {
         public string Document { get; init; } = string.Empty;
         public string HashPassword {  get; init; } = string.Empty;
+
+        protected Users() { }
+
+        public Users (string document, string hashPassword)
+        {
+            Document = document;
+            HashPassword = hashPassword;
+        }
     }
 }

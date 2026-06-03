@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using User.Domain.Interfaces.Repositories.Base;
+using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.UoW;
 using User.Infrastructure.Context;
 using User.Infrastructure.Repositories.Base;
+using User.Infrastructure.Repositories.User;
 using User.Infrastructure.Repositories.UserProfile;
 using User.Infrastructure.UoW;
 
@@ -44,6 +46,7 @@ namespace User.Infrastructure.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IUsersProfileRepository, UsersProfileRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
 
             return services;
         }

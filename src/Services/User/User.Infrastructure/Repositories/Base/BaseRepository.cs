@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using User.Domain.Interfaces.Repositories.Base;
 using User.Infrastructure.Context;
 
@@ -6,6 +7,11 @@ namespace User.Infrastructure.Repositories.Base
 {
     internal class BaseRepository<TEntity>(AuctionStreamPlatformContext context) : IBaseRepository<TEntity> where TEntity : class
     {
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return context.Set<TEntity>().AnyAsync(predicate, cancellationToken);
+            }
+
         public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
         {
             return context.Set<TEntity>().Where(predicate);
