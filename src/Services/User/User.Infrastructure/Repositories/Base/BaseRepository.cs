@@ -10,7 +10,12 @@ namespace User.Infrastructure.Repositories.Base
         public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return context.Set<TEntity>().AnyAsync(predicate, cancellationToken);
-            }
+        }
+
+        public Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+        {
+            return context.Set<TEntity>().FirstOrDefaultAsync(predicate, ct);
+        }
 
         public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
         {

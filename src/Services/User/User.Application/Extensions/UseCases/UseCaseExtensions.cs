@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using User.Application.Extensions.UseCases.Login;
 using User.Application.Extensions.UseCases.Register;
 
 namespace User.Application.Extensions.UseCases
@@ -7,7 +8,8 @@ namespace User.Application.Extensions.UseCases
     {
         public static IServiceCollection AddUseCases(this IServiceCollection services)
         {
-            return services.AddRegisterUseCases();
+            return services.AddRegisterUseCases()
+                .AddLoginUseCases();
         }
     }
 }

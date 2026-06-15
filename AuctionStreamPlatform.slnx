@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path=".env" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="CrossCutting/CrossCutting.csproj" Id="2be23704-91ad-4dfe-a979-8309527f584f" />
   </Folder>

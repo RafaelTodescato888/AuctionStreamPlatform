@@ -7,5 +7,6 @@
         public int MemorySize { get; set; }
         public int Iterations { get; set; }
         public string Hash { get; set; } = string.Empty;
+        public string JwtSecret { get; set; } = string.Empty;
     }
 }

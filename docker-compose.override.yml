@@ -21,6 +21,7 @@ services:
       - AppConfig__MemorySize=${AppConfig__MemorySize}
       - AppConfig__Iterations=${AppConfig__Iterations}
       - AppConfig__Hash=${AppConfig__Hash}
+      - AppConfig__JwtSecret=${AppConfig__JwtSecret}
     ports:
       - "${USER_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
