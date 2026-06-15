@@ -14,6 +14,8 @@ services:
   user.webapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - CONTEXT_DATA_SOURCE=${CONTEXT_DATA_SOURCE}
+      - REDIS_DATA_SOURCE=${REDIS_DATA_SOURCE}
       - USER_API_PORT=${USER_API_PORT}
       - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
       - AppConfig__MaxBytes=${AppConfig__MaxBytes}
@@ -22,6 +24,7 @@ services:
       - AppConfig__Iterations=${AppConfig__Iterations}
       - AppConfig__Hash=${AppConfig__Hash}
       - AppConfig__JwtSecret=${AppConfig__JwtSecret}
+      - AppConfig__DefaultExpiration=${AppConfig__DefaultExpiration}
     ports:
       - "${USER_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
@@ -33,3 +36,6 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "${POSTGRES_DEFAULT_PORT}:${POSTGRES_DEFAULT_PORT}"
+  redis:
+    ports:
+      - "${REDIS_DEFAULT_PORT}:${REDIS_DEFAULT_PORT}"

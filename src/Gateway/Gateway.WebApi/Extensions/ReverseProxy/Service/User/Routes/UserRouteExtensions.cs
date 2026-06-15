@@ -22,6 +22,25 @@ namespace Gateway.WebApi.Extensions.ReverseProxy.Service.User.Routes
                             { "PathPattern", "auth/register"}
                         }
                     ]
+                },
+                new RouteConfig                 {
+                    RouteId = "user-login",
+                    ClusterId = "user-cluster",
+                    Match = new RouteMatch
+                    {
+                        Path = "/api/users/auth/login",
+                        Methods = ["POST"]
+                    },
+                },
+                new RouteConfig
+                {
+                    RouteId = "user-profile",
+                    ClusterId = "user-cluster",
+                    Match = new RouteMatch
+                    {
+                        Path = "/api/users/profile/{**catch-all}",
+                        Methods = ["GET", "PATCH"]
+                    }
                 }
             ]);
 

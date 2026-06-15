@@ -20,6 +20,7 @@ namespace User.Infrastructure.Extensions
         {
             return services
                 .ConfigureContextDatabase(configuration)
+                .ConfigureCaching(configuration)
                 .ConfigureRepository();
         }
 
@@ -47,6 +48,21 @@ namespace User.Infrastructure.Extensions
 
             services.AddScoped<IUsersProfileRepository, UsersProfileRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+
+            return services;
+        }
+
+        private static IServiceCollection ConfigureCaching(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMemoryCache();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Environment.GetEnvironmentVariable("REDIS_DATA_SOURCE")
+                                       ?? configuration.GetConnectionString("REDIS_DATA_SOURCE")
+                                       ?? throw new ArgumentNullException("Não foi possível encontrar a string de conexão para REDIS_DATA_SOURCE");
+                options.InstanceName = "AuctionStreamPlatform_";
+            });
 
             return services;
         }

@@ -13,6 +13,7 @@ builder.Services.AddOpenApi();
 
 builder.Services
     .ConfigureInfrastructure(builder.Configuration)
+    .AddHttpContextAccessor()
     .AddServices()
     .AddUseCases();
 

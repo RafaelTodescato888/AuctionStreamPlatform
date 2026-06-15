@@ -8,7 +8,7 @@ using User.Domain.Interfaces.UseCase.Register.Commands;
 
 namespace User.WebApi.Endpoints
 {
-    internal static class Authentication
+    internal static class AuthenticationEndpoints
     {
         internal static IEndpointRouteBuilder MapAuthenticationEndpoints(this IEndpointRouteBuilder endpoints)
         {

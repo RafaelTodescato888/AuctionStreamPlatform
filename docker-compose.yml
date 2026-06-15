@@ -15,6 +15,10 @@ services:
       - db_data:/var/lib/postgresql
     networks:
       - server
+  redis:
+    image: redis:alpine
+    networks:
+      - server
 
 networks:
   server:

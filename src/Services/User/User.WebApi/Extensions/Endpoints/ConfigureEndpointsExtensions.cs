@@ -6,7 +6,8 @@ namespace User.WebApi.Extensions.Endpoints
     {
         internal static IEndpointRouteBuilder MapEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            return endpoints.MapAuthenticationEndpoints();
+            return endpoints.MapAuthenticationEndpoints()
+                .MapUserProfileEndpoints();
         }
     }
 }
