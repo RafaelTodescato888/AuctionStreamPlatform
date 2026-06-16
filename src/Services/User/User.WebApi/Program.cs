@@ -1,3 +1,6 @@
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 using User.Application.Extensions.UseCases;
 using User.Domain.Constants.Configuration;
 using User.Infrastructure.Extensions;
@@ -11,7 +14,10 @@ builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfi
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddAuthorization();
+
 builder.Services
+    .ConfigureAuthentication(builder.Configuration)
     .ConfigureInfrastructure(builder.Configuration)
     .AddHttpContextAccessor()
     .AddServices()
@@ -28,5 +34,8 @@ if (app.Environment.IsDevelopment())
 app.Services.ConfigureMigrations();
 
 app.MapEndpoints();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

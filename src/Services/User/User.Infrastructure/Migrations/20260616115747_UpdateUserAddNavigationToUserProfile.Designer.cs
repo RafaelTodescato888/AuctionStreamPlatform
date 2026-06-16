@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using User.Infrastructure.Context;
@@ -11,9 +12,11 @@ using User.Infrastructure.Context;
 namespace User.Infrastructure.Migrations
 {
     [DbContext(typeof(AuctionStreamPlatformContext))]
-    partial class AuctionStreamPlatformContextModelSnapshot : ModelSnapshot
+    [Migration("20260616115747_UpdateUserAddNavigationToUserProfile")]
+    partial class UpdateUserAddNavigationToUserProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -23,7 +23,7 @@ namespace Gateway.WebApi.Extensions.ReverseProxy.Service.User.Routes
                         }
                     ]
                 },
-                new RouteConfig                 {
+                new RouteConfig {
                     RouteId = "user-login",
                     ClusterId = "user-cluster",
                     Match = new RouteMatch
@@ -31,6 +31,11 @@ namespace Gateway.WebApi.Extensions.ReverseProxy.Service.User.Routes
                         Path = "/api/users/auth/login",
                         Methods = ["POST"]
                     },
+                    Transforms = [
+                        new Dictionary<string, string> {
+                            { "PathPattern", "auth/login"}
+                        }
+                    ]
                 },
                 new RouteConfig
                 {
@@ -40,7 +45,12 @@ namespace Gateway.WebApi.Extensions.ReverseProxy.Service.User.Routes
                     {
                         Path = "/api/users/profile/{**catch-all}",
                         Methods = ["GET", "PATCH"]
-                    }
+                    },
+                    Transforms = [
+                        new Dictionary<string, string> {
+                            { "PathPattern", "profile/{**catch-all}"}
+                        }
+                    ]
                 }
             ]);
 

@@ -4,6 +4,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - GATEWAY_API_PORT=${GATEWAY_API_PORT}
       - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
+      - AppConfig__JwtSecret=${AppConfig__JwtSecret}
     ports:
       - "${GATEWAY_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:

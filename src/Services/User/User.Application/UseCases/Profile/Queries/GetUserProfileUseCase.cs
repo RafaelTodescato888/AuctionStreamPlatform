@@ -8,7 +8,7 @@ using User.Domain.Helpers;
 using User.Domain.Interfaces.UoW;
 using User.Domain.Interfaces.UseCase.Profile.Queries;
 
-namespace User.Application.Extensions.UseCases.Profile.Queries
+namespace User.Application.UseCases.Profile.Queries
 {
     internal sealed class GetUserProfileUseCase(
         IHttpContextAccessor httpContextAccessor,

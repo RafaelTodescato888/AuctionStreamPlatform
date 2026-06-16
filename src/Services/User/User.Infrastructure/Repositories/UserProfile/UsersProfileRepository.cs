@@ -34,7 +34,7 @@ namespace User.Infrastructure.Repositories.UserProfile
             if (cachedUser != null)
                 return cachedUser;
 
-            var user = await GetAll(u => u.Id == id)
+            var user = await GetAll(u => u.UserId == id)
                 .Select(u => new UserProfileResponseDTO(u.Name, u.Email, u.Bio, u.BirthDate, u.User.Role))
                 .FirstOrDefaultAsync(cancellationToken);
 
