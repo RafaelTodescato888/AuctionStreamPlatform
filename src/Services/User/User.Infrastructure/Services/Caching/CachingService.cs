@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using User.Domain.Interfaces.Services.Caching;
 
 namespace User.Infrastructure.Services.Caching
@@ -10,6 +11,15 @@ namespace User.Infrastructure.Services.Caching
         IDistributedCache distributedCache
     ) : ICachingService
     {
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            Converters =
+            {
+                new JsonStringEnumConverter()
+            }
+        };
+
+
         public T? Get<T>(string key)
         {
             if (memoryCache.TryGetValue(key, out T? value))
@@ -18,7 +28,7 @@ namespace User.Infrastructure.Services.Caching
             var cachedData = distributedCache.GetString(key);
 
             if (!string.IsNullOrEmpty(cachedData))
-                return JsonSerializer.Deserialize<T>(cachedData);
+                return JsonSerializer.Deserialize<T>(cachedData, JsonOptions);
 
             return default;
         }
@@ -38,7 +48,7 @@ namespace User.Infrastructure.Services.Caching
 
             memoryCache.Set(key, value, options);
 
-            var serializedData = JsonSerializer.Serialize(value);
+            var serializedData = JsonSerializer.Serialize(value, JsonOptions);
             var cacheOptions = new DistributedCacheEntryOptions();
             if (expiration.HasValue)
                 cacheOptions.SetAbsoluteExpiration(expiration.Value);

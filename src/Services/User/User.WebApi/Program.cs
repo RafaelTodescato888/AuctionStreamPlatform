@@ -1,6 +1,3 @@
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
 using User.Application.Extensions.UseCases;
 using User.Domain.Constants.Configuration;
 using User.Infrastructure.Extensions;
@@ -20,6 +17,7 @@ builder.Services
     .ConfigureAuthentication(builder.Configuration)
     .ConfigureInfrastructure(builder.Configuration)
     .AddHttpContextAccessor()
+    .AddJsonStringEnumConverter()
     .AddServices()
     .AddUseCases();
 
