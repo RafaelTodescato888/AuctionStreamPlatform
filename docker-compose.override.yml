@@ -26,6 +26,10 @@ services:
       - AppConfig__Hash=${AppConfig__Hash}
       - AppConfig__JwtSecret=${AppConfig__JwtSecret}
       - AppConfig__DefaultExpiration=${AppConfig__DefaultExpiration}
+      - AdminConfig__Name=${AdminConfig__Name}
+      - AdminConfig__Email=${AdminConfig__Email}
+      - AdminConfig__Document=${AdminConfig__Document}
+      - AdminConfig__Password=${AdminConfig__Password}
     ports:
       - "${USER_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:

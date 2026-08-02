@@ -10,6 +10,7 @@ using User.Infrastructure.Context;
 using User.Infrastructure.Repositories.Base;
 using User.Infrastructure.Repositories.User;
 using User.Infrastructure.Repositories.UserProfile;
+using User.Infrastructure.Seeds;
 using User.Infrastructure.UoW;
 
 namespace User.Infrastructure.Extensions
@@ -30,9 +31,10 @@ namespace User.Infrastructure.Extensions
                                        ?? configuration.GetConnectionString("CONTEXT_DATA_SOURCE")
                                        ?? throw new ArgumentNullException("Não foi possível encontrar a string de conexão para CONTEXT_DATA_SOURCE");
 
-            services.AddDbContext<AuctionStreamPlatformContext>(options =>
+            services.AddDbContext<AuctionStreamPlatformContext>((serviceProvider, options) =>
             {
                 options.UseNpgsql(connectionString);
+                options.UseAsyncUsersProfileSeeding(serviceProvider);
                 options.LogTo(Console.WriteLine, LogLevel.Information);
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();

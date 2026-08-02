@@ -10,8 +10,8 @@ namespace User.Domain.Entities
         public string HashPassword { get; init; } = string.Empty;
         public string? RefreshToken { get; private set; }
         public DateTime? RefreshTokenExpiration { get; private set; }
-        public ERole Role { get; init; } = ERole.BIDDER;
-        public EUserStatus Status { get; init; } = EUserStatus.ACTIVE;
+        public ERole Role { get; init; }
+        public EUserStatus Status { get; init; }
 
         protected Users() { }
 
@@ -23,6 +23,14 @@ namespace User.Domain.Entities
             Role = ERole.BIDDER;
             Status = EUserStatus.ACTIVE;
         }
+        
+        public Users(string document, string hashPassword, ERole role)
+        {
+            Document = document;
+            HashPassword=hashPassword;
+            Role = role;
+        } 
+        
 
         #region [Factory]
         public void SetRefreshToken(RefreshTokenDTO content)

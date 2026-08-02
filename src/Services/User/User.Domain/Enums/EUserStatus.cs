@@ -4,6 +4,7 @@
     {
         ACTIVE = 1,
         INACTIVE,
+        REVIEW_PENDING,
         BANNED
     }
 }

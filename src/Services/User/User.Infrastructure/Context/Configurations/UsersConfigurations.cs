@@ -8,7 +8,7 @@ namespace User.Infrastructure.Context.Configurations
     {
         public void Configure(EntityTypeBuilder<Users> builder)
         {
-            builder.Property(u => u.Document).HasMaxLength(11);
+            builder.Property(u => u.Document).HasMaxLength(14);
             builder.HasIndex(u => u.Document).IsUnique();
         }
     }

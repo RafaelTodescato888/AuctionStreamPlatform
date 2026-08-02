@@ -1,6 +1,8 @@
 ﻿using CrossCutting.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
+using User.Domain.Constants.Configuration;
 using User.Domain.Dto.Register.Request;
+using User.Domain.Enums;
 
 namespace User.Domain.Entities
 {
@@ -15,6 +17,14 @@ namespace User.Domain.Entities
         protected UsersProfile()
         {
             
+        }
+
+        public UsersProfile(AdminConfig adminConfig, string hashedPassword)
+        {
+            Name = adminConfig.Name;
+            Email = adminConfig.Email;
+            BirthDate = default;
+            User = new Users(adminConfig.Document, hashedPassword, ERole.ADMIN);
         }
 
         public UsersProfile(RequestRegisterUserDTO content)
