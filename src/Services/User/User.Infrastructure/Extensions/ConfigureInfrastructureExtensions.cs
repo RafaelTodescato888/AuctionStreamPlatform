@@ -1,4 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CrossCutting.Kafka.Common.Consumers.Extensions;
+using CrossCutting.Kafka.Common.Consumers.Options;
+using CrossCutting.Kafka.Common.Producers.Extensions;
+using CrossCutting.Kafka.Common.Producers.Options;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,6 +12,8 @@ using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.Repositories.UserSession;
 using User.Domain.Interfaces.UoW;
 using User.Infrastructure.Context;
+using User.Infrastructure.Kafka.Consumers;
+using User.Infrastructure.Kafka.Envelopes;
 using User.Infrastructure.Repositories.Base;
 using User.Infrastructure.Repositories.User;
 using User.Infrastructure.Repositories.UserProfile;
@@ -24,7 +30,8 @@ public static class ConfigureInfrastructureExtensions
         return services
             .ConfigureContextDatabase(configuration)
             .ConfigureCaching(configuration)
-            .ConfigureRepository();
+            .ConfigureRepository()
+            .ConfigureKafkaServices(configuration);
     }
 
     private static IServiceCollection ConfigureContextDatabase(this IServiceCollection services, IConfiguration configuration)
@@ -69,6 +76,31 @@ public static class ConfigureInfrastructureExtensions
             options.InstanceName = "AuctionStreamPlatform_";
         });
 
+        return services;
+    }
+
+    private static IServiceCollection ConfigureKafkaServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddProducers(configuration);
+        services.AddConsumers(configuration);
+
+        return services;
+    }
+
+    private static IServiceCollection AddConsumers(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<KafkaConsumerOptions>(configuration.GetSection("Kafka:Consumer"));
+
+        services.AddKafkaConsumer<UserCreatedConsumer, UserCreatedEnvelope>(configuration);
+
+        return services;
+    }
+
+    private static IServiceCollection AddProducers(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<KafkaProducerOptions>(configuration.GetSection("Kafka:Producer"));
+
+        services.AddKafkaProducer<UserCreatedEnvelope>(configuration);
         return services;
     }
 }

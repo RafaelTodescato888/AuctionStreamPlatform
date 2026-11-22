@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="CrossCutting/CrossCutting.csproj" Id="2be23704-91ad-4dfe-a979-8309527f584f" />
+    <Project Path="src/CrossCutting.Kafka.Common/CrossCutting.Kafka.Common.csproj" Id="fe2c188a-c2cd-45af-b120-44b88061d2bf" />
   </Folder>
   <Folder Name="/src/Gateway/">
     <Project Path="src/Gateway/Gateway.WebApi/Gateway.WebApi.csproj" />
