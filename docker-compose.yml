@@ -4,11 +4,15 @@ services:
     build:
       context: .
       dockerfile: src/Gateway/Gateway.WebApi/Dockerfile
+    networks:
+      - server
   user.webapi:
     image: ${DOCKER_REGISTRY-}userwebapi
     build:
       context: .
       dockerfile: src/Services/User/User.WebApi/Dockerfile
+    networks:
+      - server
   db:
     image: postgres:18.3
     volumes:
@@ -17,6 +21,11 @@ services:
       - server
   redis:
     image: redis:alpine
+    networks:
+      - server
+
+  kafka:
+    image: apache/kafka:4.4.0
     networks:
       - server
 

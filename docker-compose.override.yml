@@ -30,6 +30,9 @@ services:
       - AdminConfig__Email=${AdminConfig__Email}
       - AdminConfig__Document=${AdminConfig__Document}
       - AdminConfig__Password=${AdminConfig__Password}
+      - Kafka__Consumer__Config__BootstrapServers=kafka:9092
+      - Kafka__Producer__Config__BootstrapServers=kafka:9092
+      - Kafka__Consumer__Config__AllowAutoCreateTopics=true
     ports:
       - "${USER_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
@@ -44,3 +47,22 @@ services:
   redis:
     ports:
       - "${REDIS_DEFAULT_PORT}:${REDIS_DEFAULT_PORT}"
+  kafka:
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_LISTENERS=PLAINTEXT://:9092,EXTERNAL://:29092,CONTROLLER://:9093
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_NUM_PARTITIONS=3
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - "9092:9092"
+      - "29092:29092"
