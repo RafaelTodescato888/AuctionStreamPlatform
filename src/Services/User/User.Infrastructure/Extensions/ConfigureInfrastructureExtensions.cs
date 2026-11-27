@@ -5,6 +5,7 @@ using CrossCutting.Kafka.Common.Producers.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using User.Domain.Interfaces.Repositories.Base;
 using User.Domain.Interfaces.Repositories.User;
@@ -38,7 +39,7 @@ public static class ConfigureInfrastructureExtensions
     {
         string connectionString = Environment.GetEnvironmentVariable("CONTEXT_DATA_SOURCE")
                                    ?? configuration.GetConnectionString("CONTEXT_DATA_SOURCE")
-                                   ?? throw new ArgumentNullException("Não foi possível encontrar a string de conexão para CONTEXT_DATA_SOURCE");
+                                   ?? throw new ArgumentNullException("Could not find the CONTEXT_DATA_SOURCE environment variable");
 
         services.AddDbContext<UserContext>((serviceProvider, options) =>
         {
@@ -72,7 +73,7 @@ public static class ConfigureInfrastructureExtensions
         {
             options.Configuration = Environment.GetEnvironmentVariable("REDIS_DATA_SOURCE")
                                    ?? configuration.GetConnectionString("REDIS_DATA_SOURCE")
-                                   ?? throw new ArgumentNullException("Não foi possível encontrar a string de conexão para REDIS_DATA_SOURCE");
+                                   ?? throw new ArgumentNullException("Could not find the REDIS_DATA_SOURCE environment variable");
             options.InstanceName = "AuctionStreamPlatform_";
         });
 

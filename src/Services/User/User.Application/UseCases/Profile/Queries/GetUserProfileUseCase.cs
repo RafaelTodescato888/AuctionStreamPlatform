@@ -1,6 +1,9 @@
 ﻿using CrossCutting.Errors.Base;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using OneOf;
+using System.Diagnostics;
+using User.Domain.Constants.Service;
 using User.Domain.Dto.Profile;
 using User.Domain.Errors.Common;
 using User.Domain.Errors.Common.Authentication;
@@ -12,18 +15,39 @@ namespace User.Application.UseCases.Profile.Queries;
 
 internal sealed class GetUserProfileUseCase(
     IHttpContextAccessor httpContextAccessor,
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    ILogger<GetUserProfileUseCase> logger
 ) : IGetUserProfileUseCase
 {
     public async Task<OneOf<ResponseUserProfileDTO, BaseError>> GetAsync(CancellationToken cancellationToken = default)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+        logger.LogInformation("[{ClassName}] Getting user profile", nameof(GetUserProfileUseCase));
         var userId = SessionHelper.GetUserId(httpContextAccessor.HttpContext);
+
         if (!userId.HasValue)
-            return new UserIsNotAuthorizedError();
+        {
+            var error = new UserIsNotAuthorizedError();
+
+            logger.LogWarning("[{ClassName}] on [{ServiceName}] User is not authorized, ErrorCode: {ErrorCode}", nameof(GetUserProfileUseCase), ServiceNameConstants.Name, error.HttpErrorCode);
+            return error;
+        }
 
         var user = await unitOfWork.UsersProfileRepository.GetAsync(userId.Value, cancellationToken);
         if (user == null)
-            return new UserNotFoundError();
+        {
+            var error = new UserNotFoundError();
+
+            logger.LogWarning("[{ClassName}] on [{ServiceName}] User with ID {UserId} not found, ErrorCode: {ErrorCode}", nameof(GetUserProfileUseCase), ServiceNameConstants.Name, userId.Value, error.HttpErrorCode);
+            return error;
+        }
+
+        stopwatch.Stop();
+        
+        var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+        logger.LogInformation("[{ClassName}] on [{ServiceName}] User profile retrieved successfully for user ID {UserId} in {ElapsedMilliseconds} ms", nameof(GetUserProfileUseCase), ServiceNameConstants.Name, userId.Value, elapsedMilliseconds);
 
         return user;
     }

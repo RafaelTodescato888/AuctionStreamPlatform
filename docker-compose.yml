@@ -1,5 +1,6 @@
 services:
   gateway.webapi:
+    container_name: gateway.webapi
     image: ${DOCKER_REGISTRY-}gatewaywebapi
     build:
       context: .
@@ -7,6 +8,7 @@ services:
     networks:
       - server
   user.webapi:
+    container_name: user.webapi
     image: ${DOCKER_REGISTRY-}userwebapi
     build:
       context: .
@@ -14,18 +16,43 @@ services:
     networks:
       - server
   db:
+    container_name: db
     image: postgres:18.3
-    volumes:
-      - db_data:/var/lib/postgresql
     networks:
       - server
   redis:
+    container_name: redis
     image: redis:alpine
     networks:
       - server
-
   kafka:
+    container_name: kafka
     image: apache/kafka:4.4.0
+    networks:
+      - server
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    networks:
+      - server
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    networks:
+      - server
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    networks:
+      - server
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    networks:
+      - server
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
     networks:
       - server
 
@@ -34,3 +61,4 @@ networks:
 
 volumes:
   db_data:
+  grafana_data:
