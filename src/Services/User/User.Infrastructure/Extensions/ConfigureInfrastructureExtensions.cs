@@ -41,9 +41,9 @@ public static class ConfigureInfrastructureExtensions
 
     private static IServiceCollection ConfigureContextDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = Environment.GetEnvironmentVariable("CONTEXT_DATA_SOURCE")
-                                   ?? configuration.GetConnectionString("CONTEXT_DATA_SOURCE")
-                                   ?? throw new ArgumentNullException("Could not find the CONTEXT_DATA_SOURCE environment variable");
+        string connectionString = Environment.GetEnvironmentVariable("USER_CONTEXT_DATA_SOURCE")
+                                   ?? configuration.GetConnectionString("USER_CONTEXT_DATA_SOURCE")
+                                   ?? throw new ArgumentNullException("Could not find the USER_CONTEXT_DATA_SOURCE environment variable");
 
         services.AddDbContext<UserContext>((serviceProvider, options) =>
         {
