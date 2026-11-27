@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Kafka\Consumers\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

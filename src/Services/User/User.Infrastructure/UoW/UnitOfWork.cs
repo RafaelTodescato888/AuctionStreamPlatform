@@ -2,6 +2,7 @@
 using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.Repositories.UserSession;
+using User.Domain.Interfaces.Repositories.UserVerification;
 using User.Domain.Interfaces.UoW;
 using User.Infrastructure.Context;
 
@@ -11,12 +12,14 @@ internal sealed class UnitOfWork(
     UserContext context,
     IUsersProfileRepository usersProfileRepository,
     IUsersRepository usersRepository,
-    IUsersSessionRepository usersSessionRepository
+    IUsersSessionRepository usersSessionRepository,
+    IUsersVerificationRepository usersVerificationRepository
 ) : IUnitOfWork
 {
     public IUsersProfileRepository UsersProfileRepository { get; private set; } = usersProfileRepository;
     public IUsersRepository UserRepository { get; private set; } = usersRepository;
     public IUsersSessionRepository UsersSessionRepository { get; private set; } = usersSessionRepository;
+    public IUsersVerificationRepository UsersVerificationRepository { get; private set; } = usersVerificationRepository;
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct)
     {

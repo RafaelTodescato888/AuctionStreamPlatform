@@ -26,7 +26,7 @@ internal sealed class UsersProfileRepository(
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return userProfile?.Id;
+        return userProfile?.UserId;
     }
 
     public Task<bool> ExistsByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)

@@ -14,3 +14,4 @@ public record DocumentIsInvalidError() : BaseError("Document is invalid.", nameo
 public record PasswordIsRequiredError() : BaseError("Password is required.", nameof(BaseError), StatusCodes.Status400BadRequest);
 
 public record UserAlreadyRegisteredError() : BaseError("User is already registered.", nameof(BaseError), StatusCodes.Status409Conflict);
+public record CodeSizeShouldntBeNegative() : BaseError("Code size should not be negative.", nameof(BaseError), StatusCodes.Status400BadRequest);
