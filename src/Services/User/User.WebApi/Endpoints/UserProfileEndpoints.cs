@@ -1,6 +1,6 @@
 ﻿using CrossCutting.Errors.Base;
 using Microsoft.AspNetCore.Mvc;
-using User.Domain.Dto.Profile;
+using User.Domain.Dto.Profile.Response;
 using User.Domain.Dto.Update.Request;
 using User.Domain.Interfaces.UseCase.Profile.Queries;
 using User.Domain.Interfaces.UseCase.Update.Commands;

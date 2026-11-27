@@ -15,6 +15,7 @@
     <Project Path="src/Services/User/User.Application/User.Application.csproj" Id="fad0e5dc-eebd-4a99-ae4f-63fdf12f19d9" />
     <Project Path="src/Services/User/User.Domain/User.Domain.csproj" />
     <Project Path="src/Services/User/User.Infrastructure/User.Infrastructure.csproj" Id="2fc9b890-8805-4405-bd50-f82556564984" />
+    <Project Path="src/Services/User/User.UnitTests/User.UnitTests.csproj" Id="17e5f713-67c3-4f0c-a391-7df9630a5670" />
     <Project Path="src/Services/User/User.WebApi/User.WebApi.csproj" />
   </Folder>
   <Project Path="docker-compose.dcproj">

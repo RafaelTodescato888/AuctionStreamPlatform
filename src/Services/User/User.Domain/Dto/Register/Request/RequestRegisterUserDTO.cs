@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace User.Domain.Dto.Register.Request;
 
-public record RequestRegisterUserDTO(
+public class RequestRegisterUserDTO(
     string Name,
     string Email,
     string? Bio,
@@ -16,6 +16,7 @@ public record RequestRegisterUserDTO(
     public string Email { get; init; } = Email;
     public string? Bio { get; init; } = Bio;
     public DateOnly BirthDate { get; init; } = BirthDate;
+
     [JsonConverter(typeof(OnlyNumbers))]
     public string Document { get; init; } = Document;
     public string Password { get; init; } = Password;

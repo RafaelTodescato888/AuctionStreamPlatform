@@ -1,4 +1,4 @@
-﻿using User.Domain.Dto.Profile;
+﻿using User.Domain.Dto.Profile.Response;
 using User.Domain.Dto.Register.Request;
 using User.Domain.Dto.Update.Request;
 using User.Domain.Entities;
