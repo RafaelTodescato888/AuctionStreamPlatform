@@ -1,4 +1,5 @@
 using CrossCutting.Errors.Base;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 using Moq;
 using User.Application.UseCases.Login.Commands;
@@ -15,6 +16,7 @@ public class LoginWrongPasswordUseCaseTests
 
     private readonly Mock<IUnitOfWork> _unitOfWorkMock = new();
     private readonly Mock<IUsersRepository> _userRepositoryMock = new();
+    private readonly Mock<IDbContextTransaction> _transactionMock = new();
 
     private readonly LoginWrongPasswordUseCase _useCase;
 
@@ -23,6 +25,10 @@ public class LoginWrongPasswordUseCaseTests
         _unitOfWorkMock
             .SetupGet(x => x.UserRepository)
             .Returns(_userRepositoryMock.Object);
+
+        _unitOfWorkMock
+            .Setup(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_transactionMock.Object);
 
         var options = Options.Create(new LoginAttemptsConfig
         {

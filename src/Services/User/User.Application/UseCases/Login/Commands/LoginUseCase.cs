@@ -48,10 +48,12 @@ internal sealed class LoginUseCase(
         var userToLoginInformations = userToLogin.GetValue();
         var refreshTokenInformations = generateTokenService.GenerateRefreshToken();
 
+        using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+
         if (!await unitOfWork.UsersSessionRepository.UpsertAsync(refreshTokenInformations, userToLoginInformations.Id, cancellationToken))
         {
             var error = new DatabaseError();
-            logger.LogInformation("Executing [{ClassName}] on [{ServiceName}] during Session Generation, ErrorCode {ErrorCode}",
+            logger.LogInformation("Executing [{ClassName}] on [{ServiceName}] failed during Session Generation, ErrorCode {ErrorCode}",
                 nameof(LoginUseCase),
                 ServiceNameConstants.Name,
                 error.HttpErrorCode);
@@ -59,6 +61,18 @@ internal sealed class LoginUseCase(
             return error;
         }
 
+        if (!await unitOfWork.UserRepository.ResetLoginAttemptsAsync(userToLoginInformations.Id, cancellationToken))
+        {
+            var error = new DatabaseError();
+            logger.LogInformation("Executing [{ClassName}] on [{ServiceName}] failed during login attempts reset, ErrorCode {ErrorCode}",
+                nameof(LoginUseCase),
+                ServiceNameConstants.Name,
+                error.HttpErrorCode);
+
+            return error;
+        }
+
+        await transaction.CommitAsync(cancellationToken);
         stopwatch.Stop();
         var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
 

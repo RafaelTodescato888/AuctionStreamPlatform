@@ -48,4 +48,16 @@ internal sealed class UsersRepository(UserContext context) : BaseRepository<User
 
         return true;
     }
+
+    public async Task<bool> ResetLoginAttemptsAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (user == null) return false;
+
+        user.ResetLoginAttemps();
+
+        await context.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
 }

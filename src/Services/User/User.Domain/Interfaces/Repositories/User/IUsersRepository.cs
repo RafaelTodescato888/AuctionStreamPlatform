@@ -11,4 +11,5 @@ public interface IUsersRepository : IBaseRepository<Users>
     Task<UserCredentialsProjection?> GetUserByCredentialsAsync(RequestUserLoginDTO content, CancellationToken cancellationToken = default);
     Task<bool> BlockUserAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<bool> IncrementFailedLoginAttemptsAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<bool> ResetLoginAttemptsAsync(Guid userId, CancellationToken cancellationToken = default);
 }

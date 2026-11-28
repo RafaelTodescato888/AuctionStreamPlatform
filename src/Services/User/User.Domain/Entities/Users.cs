@@ -42,6 +42,11 @@ public class Users : BaseEntity
     {
         Status = EUserStatus.TEMPORARILY_BLOCKED;
     }
+
+    public void ResetLoginAttemps()
+    {
+        FailedLoginAttempts = 0;
+    }
     #endregion
 
     #region [Navigations]

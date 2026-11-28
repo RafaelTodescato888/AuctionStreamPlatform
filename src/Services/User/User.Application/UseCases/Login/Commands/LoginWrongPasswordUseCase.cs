@@ -14,6 +14,7 @@ public class LoginWrongPasswordUseCase(
 {
     public async Task<BaseError> IncrementFailedLoginAttemptsOrBlockUserAsync(Guid userId, sbyte failedLoginAttempts, CancellationToken cancellationToken = default)
     {
+        using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
         if(options.Value.MaxFailedLoginAttempts - 1 <= failedLoginAttempts)
         {
             if (!await unitOfWork.UserRepository.BlockUserAsync(userId, cancellationToken))
@@ -22,7 +23,8 @@ public class LoginWrongPasswordUseCase(
         
         if (!await unitOfWork.UserRepository.IncrementFailedLoginAttemptsAsync(userId, cancellationToken))
             return new DatabaseError();
-        
+
+        await transaction.CommitAsync(cancellationToken);
         
         return new UserOrPasswordIsIncorrectError();
     }
