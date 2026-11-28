@@ -20,7 +20,7 @@ public class UsersProfile : BaseEntity
         
     }
 
-    public UsersProfile(AdminConfig adminConfig, string hashedPassword)
+    public UsersProfile(AdminCredentialsConfig adminConfig, string hashedPassword)
     {
         Name = adminConfig.Name;
         Email = adminConfig.Email;

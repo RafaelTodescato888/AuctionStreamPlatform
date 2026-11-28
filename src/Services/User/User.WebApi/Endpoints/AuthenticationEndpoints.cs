@@ -1,5 +1,6 @@
 ﻿using CrossCutting.Errors.Base;
 using Microsoft.AspNetCore.Mvc;
+using User.Domain.Constants.RateLimitStrategy;
 using User.Domain.Dto.Login.Request;
 using User.Domain.Dto.Login.Response;
 using User.Domain.Dto.Register.Request;
@@ -70,7 +71,8 @@ internal static class AuthenticationEndpoints
             .Produces<ResponseUserLoginDTO>(StatusCodes.Status200OK)
             .Produces<BaseError>(StatusCodes.Status400BadRequest)
             .Produces<BaseError>(StatusCodes.Status401Unauthorized)
-            .Produces<BaseError>(StatusCodes.Status500InternalServerError);
+            .Produces<BaseError>(StatusCodes.Status500InternalServerError)
+            .RequireRateLimiting(RateLimitStrategyConstant.Login_Fixed_Window);
 
         return endpoints;
     }

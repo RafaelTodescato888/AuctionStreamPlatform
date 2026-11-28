@@ -1,7 +1,9 @@
 using CrossCutting.Extensions;
 using CrossCutting.Log.Common.Extensions;
+using Microsoft.AspNetCore.RateLimiting;
 using User.Application.Extensions.UseCases;
 using User.Domain.Constants.Configuration;
+using User.Domain.Constants.RateLimitStrategy;
 using User.Domain.Constants.Service;
 using User.Infrastructure.Extensions;
 using User.WebApi.Extensions.Endpoints;
@@ -10,8 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
-builder.Services.Configure<AdminConfig>(builder.Configuration.GetSection("AdminConfig"));
+builder.Services.Configure<TokenGenerationConfig>(builder.Configuration.GetSection(nameof(TokenGenerationConfig)));
+builder.Services.Configure<AdminCredentialsConfig>(builder.Configuration.GetSection(nameof(AdminCredentialsConfig)));
+builder.Services.Configure<LoginAttemptsConfig>(builder.Configuration.GetSection(nameof(LoginAttemptsConfig)));
 
 builder.Services.AddOpenApi();
 
@@ -21,6 +24,7 @@ builder.Services.AddAuthorization();
 
 builder.Services
     .ConfigureInfrastructure(builder.Configuration)
+    .ConfigureRateLimiters()
     .AddObservability(builder.Configuration, builder.Host, ServiceNameConstants.Name)
     .AddJsonStringEnumConverter()
     .AddServices()
@@ -38,6 +42,8 @@ app.Services.ConfigureMigrations();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapEndpoints();
 

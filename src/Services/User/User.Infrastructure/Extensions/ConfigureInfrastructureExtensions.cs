@@ -2,11 +2,15 @@
 using CrossCutting.Kafka.Common.Consumers.Options;
 using CrossCutting.Kafka.Common.Producers.Extensions;
 using CrossCutting.Kafka.Common.Producers.Options;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using User.Domain.Constants.RateLimitStrategy;
 using User.Domain.Interfaces.Kafka.Producers.Register;
 using User.Domain.Interfaces.Repositories.Base;
 using User.Domain.Interfaces.Repositories.SellerApplication;
@@ -116,6 +120,23 @@ public static class ConfigureInfrastructureExtensions
     {
         services.AddScoped<IRegisterBidderProducer, RegisterBidderProducer>();
         services.AddScoped<IRegisterSellerProducer, RegisterSellerProducer>();
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureRateLimiters(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.AddFixedWindowLimiter(RateLimitStrategyConstant.Login_Fixed_Window, limiter =>
+            {
+                limiter.PermitLimit = 3;
+                limiter.Window = TimeSpan.FromSeconds(15);
+                limiter.QueueLimit = 0;
+            });
+        });
 
         return services;
     }

@@ -21,7 +21,7 @@ public static class JwtBearerConfigurationExtensions
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(configuration.GetValue<string>("AppConfig:JwtSecret")!)
+                            Encoding.UTF8.GetBytes(configuration.GetValue<string>("TokenGenerationConfig:JwtSecret")!)
                         ),
                         RoleClaimType = ClaimTypes.Role
                     };

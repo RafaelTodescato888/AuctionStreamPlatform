@@ -33,13 +33,13 @@ public class UsersProfileTests
         Assert.Equal(request.Document, profile.User.Document);
         Assert.Equal(request.HashedPassword, profile.User.HashPassword);
         Assert.Equal(ERole.BIDDER, profile.User.Role);
-        Assert.Equal(EUserStatus.ACTIVE, profile.User.Status);
+        Assert.Equal(EUserStatus.ACTIVATION_PENDING, profile.User.Status);
     }
 
     [Fact]
     public void UsersProfile_Should_Create_Admin_Profile_When_Created_With_AdminConfig()
     {
-        var adminConfig = new AdminConfig
+        var adminConfig = new AdminCredentialsConfig
         {
             Name = "Admin",
             Email = "admin@email.com",
@@ -59,7 +59,7 @@ public class UsersProfileTests
         Assert.Equal(adminConfig.Document, profile.User.Document);
         Assert.Equal(hashedPassword, profile.User.HashPassword);
         Assert.Equal(ERole.ADMIN, profile.User.Role);
-        Assert.Equal(EUserStatus.ACTIVE, profile.User.Status);
+        Assert.Equal(EUserStatus.ACTIVATION_PENDING, profile.User.Status);
     }
 
     [Fact]

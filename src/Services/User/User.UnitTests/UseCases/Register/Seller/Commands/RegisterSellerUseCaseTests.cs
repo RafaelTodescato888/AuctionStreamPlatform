@@ -1,5 +1,6 @@
 ﻿using CrossCutting.Errors.Base;
 using EntityFramework.Exceptions.Common;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -27,6 +28,7 @@ public class RegisterSellerUseCaseTests
     private readonly Mock<IUsersRepository> _userRepositoryMock = new();
     private readonly Mock<IUsersProfileRepository> _usersProfileRepositoryMock = new();
     private readonly Mock<ISellersApplicationRepository> _sellersApplicationRepositoryMock = new();
+    private readonly Mock<IDbContextTransaction> _transactionMock = new();
     private readonly Mock<IRegisterSellerProducer> _registerSellerProducerMock = new();
     private readonly ILogger<RegisterSellerUseCase> _logger = NullLogger<RegisterSellerUseCase>.Instance;
 
@@ -45,6 +47,10 @@ public class RegisterSellerUseCaseTests
         _unitOfWorkMock
             .SetupGet(x => x.SellersApplicationRepository)
             .Returns(_sellersApplicationRepositoryMock.Object);
+
+        _unitOfWorkMock
+            .Setup(x => x.BeginTransactionAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_transactionMock.Object);
 
         _userRepositoryMock
             .Setup(x => x.ExistsByDocumentOrEmailAsync(
