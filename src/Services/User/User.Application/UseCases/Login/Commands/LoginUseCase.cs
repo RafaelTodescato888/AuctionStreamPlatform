@@ -1,9 +1,9 @@
 ﻿using CrossCutting.Errors.Base;
 using CrossCutting.Extensions;
 using OneOf;
+using User.Domain.Constants.BusinessDomain;
 using User.Domain.Dto.Login.Request;
 using User.Domain.Dto.Login.Response;
-using User.Domain.Enums;
 using User.Domain.Errors.Login;
 using User.Domain.Interfaces.Services.Authentication.Login;
 using User.Domain.Interfaces.Services.Authentication.Register;
@@ -43,6 +43,12 @@ internal sealed class LoginUseCase(
         if (userToLogin == null)
             return new UserOrPasswordIsIncorrectError();
 
+        if (UserConstants.BlockedUserStatuses.Contains(userToLogin.User.Status))
+            return new UserIsBannedError();
+
+        if (UserConstants.ByRevisionUserStatuses.Contains(userToLogin.User.Status))
+            return new UserIsOnRevisionError();
+
         if (userToLogin.HashPassword != content.Password)
         {
             return await loginWrongPasswordUseCase.IncrementFailedLoginAttemptsOrBlockUserAsync(
@@ -50,9 +56,6 @@ internal sealed class LoginUseCase(
                 userToLogin.FailedLoginAttempts,
                 cancellationToken);
         }
-
-        if (userToLogin.User.Status == EUserStatus.BANNED)
-            return new UserIsBannedError();
 
         return userToLogin.User;
     }

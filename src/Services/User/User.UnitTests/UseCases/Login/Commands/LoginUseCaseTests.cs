@@ -11,6 +11,7 @@ using User.Domain.Interfaces.Repositories.UserSession;
 using User.Domain.Interfaces.Services.Authentication.Login;
 using User.Domain.Interfaces.Services.Authentication.Register;
 using User.Domain.Interfaces.UoW;
+using User.Domain.Interfaces.UseCase.Login.Commands;
 
 namespace User.UnitTests.UseCases.Login.Commands;
 
@@ -19,6 +20,7 @@ public class LoginUseCaseTests
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IPasswordHashService> _passwordHashServiceMock;
     private readonly Mock<IGenerateTokenService> _generateTokenServiceMock;
+    private readonly Mock<ILoginWrongPasswordUseCase> _loginWrongPasswordUseCaseMock;
 
     private readonly LoginUseCase _useCase;
 
@@ -27,11 +29,13 @@ public class LoginUseCaseTests
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _passwordHashServiceMock = new Mock<IPasswordHashService>();
         _generateTokenServiceMock = new Mock<IGenerateTokenService>();
+        _loginWrongPasswordUseCaseMock = new Mock<ILoginWrongPasswordUseCase>();
 
         _useCase = new LoginUseCase(
             _unitOfWorkMock.Object,
             _passwordHashServiceMock.Object,
-            _generateTokenServiceMock.Object
+            _generateTokenServiceMock.Object,
+            _loginWrongPasswordUseCaseMock.Object
         );
     }
 
@@ -57,14 +61,14 @@ public class LoginUseCaseTests
             "John Doe",
             ERole.BIDDER,
             EUserStatus.ACTIVE
-        ), hashedPassword);
+        ), hashedPassword, 0);
 
         var userRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.User.IUsersRepository
+            IUsersRepository
         >();
 
         var sessionRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.UserSession.IUsersSessionRepository
+            IUsersSessionRepository
         >();
 
         _unitOfWorkMock
@@ -149,7 +153,7 @@ public class LoginUseCaseTests
         );
 
         var userRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.User.IUsersRepository
+            IUsersRepository
         >();
 
         _unitOfWorkMock
@@ -179,6 +183,122 @@ public class LoginUseCaseTests
     }
 
     [Fact]
+    public async Task LoginAsync_Should_Return_UserIsOnRevisionError_When_User_Is_On_Revision()
+    {
+        var userId = Guid.NewGuid();
+
+        var content = new RequestUserLoginDTO(
+            "john@email.com",
+            "password"
+        );
+
+        var userInformations = new UserCredentialsProjection(
+            new RequestGenerateTokenDTO(
+                userId,
+                "John Doe",
+                ERole.BIDDER,
+                EUserStatus.REVIEW_PENDING
+            ),
+            "hashed-password",
+            0
+        );
+
+        var userRepositoryMock = new Mock<IUsersRepository>();
+
+        _unitOfWorkMock
+            .SetupGet(u => u.UserRepository)
+            .Returns(userRepositoryMock.Object);
+
+        _passwordHashServiceMock
+            .Setup(p => p.GenerateHash(content.Password))
+            .Returns("hashed-password");
+
+        userRepositoryMock
+            .Setup(r => r.GetUserByCredentialsAsync(
+                content,
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(userInformations);
+
+        var result = await _useCase.LoginAsync(content);
+
+        Assert.True(result.IsT1);
+        Assert.IsType<UserIsOnRevisionError>(result.AsT1);
+
+        _generateTokenServiceMock.Verify(
+            g => g.GenerateRefreshToken(),
+            Times.Never
+        );
+    }
+
+    [Fact]
+    public async Task LoginAsync_Should_Return_Error_From_WrongPasswordUseCase_When_Password_Is_Incorrect()
+    {
+        var userId = Guid.NewGuid();
+        const sbyte failedLoginAttempts = 2;
+        var content = new RequestUserLoginDTO(
+            "john@email.com",
+            "password"
+        );
+
+        var userInformations = new UserCredentialsProjection(
+            new RequestGenerateTokenDTO(
+                userId,
+                "John Doe",
+                ERole.BIDDER,
+                EUserStatus.ACTIVE
+            ),
+            "hashed-password",
+            failedLoginAttempts
+        );
+
+        var wrongPasswordError = new UserOrPasswordIsIncorrectError();
+        var userRepositoryMock = new Mock<IUsersRepository>();
+
+        _unitOfWorkMock
+            .SetupGet(u => u.UserRepository)
+            .Returns(userRepositoryMock.Object);
+
+        _passwordHashServiceMock
+            .Setup(p => p.GenerateHash(content.Password))
+            .Returns("different-hashed-password");
+
+        userRepositoryMock
+            .Setup(r => r.GetUserByCredentialsAsync(
+                content,
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(userInformations);
+
+        _loginWrongPasswordUseCaseMock
+            .Setup(useCase => useCase.IncrementFailedLoginAttemptsOrBlockUserAsync(
+                userId,
+                failedLoginAttempts,
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(wrongPasswordError);
+
+        var result = await _useCase.LoginAsync(content);
+
+        Assert.True(result.IsT1);
+        Assert.Same(wrongPasswordError, result.AsT1);
+
+        _loginWrongPasswordUseCaseMock.Verify(
+            useCase => useCase.IncrementFailedLoginAttemptsOrBlockUserAsync(
+                userId,
+                failedLoginAttempts,
+                It.IsAny<CancellationToken>()
+            ),
+            Times.Once
+        );
+
+        _generateTokenServiceMock.Verify(
+            g => g.GenerateRefreshToken(),
+            Times.Never
+        );
+    }
+
+    [Fact]
     public async Task LoginAsync_Should_Return_UserIsBannedError_When_User_Is_Banned()
     {
         var userId = Guid.NewGuid();
@@ -195,11 +315,12 @@ public class LoginUseCaseTests
                 ERole.BIDDER,
                 EUserStatus.BANNED
             ),
-            "hashed-password"
+            "hashed-password",
+            0
         );
 
         var userRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.User.IUsersRepository
+            IUsersRepository
         >();
 
         _unitOfWorkMock
@@ -243,7 +364,7 @@ public class LoginUseCaseTests
             "John Doe",
             ERole.BIDDER,
             EUserStatus.ACTIVE
-        ), "hashed-password");
+        ), "hashed-password", 0);
 
         var refreshToken = new RefreshTokenDTO(
             "refresh-token",
@@ -316,7 +437,7 @@ public class LoginUseCaseTests
             "John Doe",
             ERole.BIDDER,
             EUserStatus.ACTIVE
-        ), "hashed-password");
+        ), "hashed-password", 0);
 
         var refreshToken = new RefreshTokenDTO(
             "refresh-token",
