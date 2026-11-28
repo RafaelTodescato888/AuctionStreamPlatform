@@ -1,7 +1,9 @@
 using CrossCutting.Extensions;
 using CrossCutting.Log.Common.Extensions;
+using Microsoft.AspNetCore.RateLimiting;
 using User.Application.Extensions.UseCases;
 using User.Domain.Constants.Configuration;
+using User.Domain.Constants.RateLimitStrategy;
 using User.Domain.Constants.Service;
 using User.Infrastructure.Extensions;
 using User.WebApi.Extensions.Endpoints;
@@ -21,6 +23,7 @@ builder.Services.AddAuthorization();
 
 builder.Services
     .ConfigureInfrastructure(builder.Configuration)
+    .ConfigureRateLimiters()
     .AddObservability(builder.Configuration, builder.Host, ServiceNameConstants.Name)
     .AddJsonStringEnumConverter()
     .AddServices()
@@ -38,6 +41,8 @@ app.Services.ConfigureMigrations();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapEndpoints();
 
