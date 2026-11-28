@@ -13,7 +13,7 @@ internal sealed class UserContext(DbContextOptions<UserContext> options) : DbCon
     public DbSet<UsersReputation> UsersReputations { get; set; }
     public DbSet<UsersRestriction> UsersRestrictions { get; set; }
     public DbSet<UsersVerification> UsersVerifications { get; set; }
-    public DbSet<SellersApplcation> SellersApplcations { get; set; }
+    public DbSet<SellersApplication> SellersApplications { get; set; }
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

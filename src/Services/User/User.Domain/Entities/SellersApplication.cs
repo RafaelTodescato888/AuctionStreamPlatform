@@ -4,7 +4,7 @@ using User.Domain.Enums;
 
 namespace User.Domain.Entities;
 
-public class SellersApplcation : BaseEntity
+public class SellersApplication : BaseEntity
 {
     public Guid UserId { get; private set; }
     public Guid? ReviewedBy { get; private set; }

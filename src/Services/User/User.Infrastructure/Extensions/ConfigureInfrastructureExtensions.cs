@@ -7,18 +7,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using User.Domain.Interfaces.Kafka.Producers.Register;
 using User.Domain.Interfaces.Repositories.Base;
 using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.Repositories.UserSession;
+using User.Domain.Interfaces.Repositories.UserVerification;
 using User.Domain.Interfaces.UoW;
 using User.Infrastructure.Context;
-using User.Infrastructure.Kafka.Consumers;
-using User.Infrastructure.Kafka.Envelopes;
+using User.Infrastructure.Kafka.Envelopes.Register;
+using User.Infrastructure.Kafka.Producers.Register;
 using User.Infrastructure.Repositories.Base;
 using User.Infrastructure.Repositories.User;
 using User.Infrastructure.Repositories.UserProfile;
 using User.Infrastructure.Repositories.UserSession;
+using User.Infrastructure.Repositories.UserVerification;
 using User.Infrastructure.Seeds;
 using User.Infrastructure.UoW;
 
@@ -32,14 +35,15 @@ public static class ConfigureInfrastructureExtensions
             .ConfigureContextDatabase(configuration)
             .ConfigureCaching(configuration)
             .ConfigureRepository()
-            .ConfigureKafkaServices(configuration);
+            .ConfigureKafkaServices(configuration)
+            .AddProducerServices();
     }
 
     private static IServiceCollection ConfigureContextDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = Environment.GetEnvironmentVariable("CONTEXT_DATA_SOURCE")
-                                   ?? configuration.GetConnectionString("CONTEXT_DATA_SOURCE")
-                                   ?? throw new ArgumentNullException("Could not find the CONTEXT_DATA_SOURCE environment variable");
+        string connectionString = Environment.GetEnvironmentVariable("USER_CONTEXT_DATA_SOURCE")
+                                   ?? configuration.GetConnectionString("USER_CONTEXT_DATA_SOURCE")
+                                   ?? throw new ArgumentNullException("Could not find the USER_CONTEXT_DATA_SOURCE environment variable");
 
         services.AddDbContext<UserContext>((serviceProvider, options) =>
         {
@@ -61,6 +65,7 @@ public static class ConfigureInfrastructureExtensions
         services.AddScoped<IUsersProfileRepository, UsersProfileRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IUsersSessionRepository, UsersSessionRepository>();
+        services.AddScoped<IUsersVerificationRepository, UsersVerificationRepository>();
 
         return services;
     }
@@ -92,8 +97,6 @@ public static class ConfigureInfrastructureExtensions
     {
         services.Configure<KafkaConsumerOptions>(configuration.GetSection("Kafka:Consumer"));
 
-        services.AddKafkaConsumer<UserCreatedConsumer, UserCreatedEnvelope>(configuration);
-
         return services;
     }
 
@@ -101,7 +104,14 @@ public static class ConfigureInfrastructureExtensions
     {
         services.Configure<KafkaProducerOptions>(configuration.GetSection("Kafka:Producer"));
 
-        services.AddKafkaProducer<UserCreatedEnvelope>(configuration);
+        services.AddKafkaProducer<BidderUserCreatedEnvelope>(configuration);
+        return services;
+    }
+
+    private static IServiceCollection AddProducerServices(this IServiceCollection services)
+    {
+        services.AddScoped<IRegisterBidderProducer, RegisterBidderProducer>();
+
         return services;
     }
 }

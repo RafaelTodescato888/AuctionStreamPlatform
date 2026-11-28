@@ -4,5 +4,5 @@ public static class TopicConstants
 {
     public const string GroupId = "user-service";
 
-    public const string UserCreatedTopic = "user-created";
+    public const string UserCreatedTopic = "user.bidder.creation";
 }

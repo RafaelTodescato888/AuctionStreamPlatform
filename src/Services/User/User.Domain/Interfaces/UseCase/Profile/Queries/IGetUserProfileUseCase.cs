@@ -1,6 +1,6 @@
 ﻿using CrossCutting.Errors.Base;
 using OneOf;
-using User.Domain.Dto.Profile;
+using User.Domain.Dto.Profile.Response;
 
 namespace User.Domain.Interfaces.UseCase.Profile.Queries;
 

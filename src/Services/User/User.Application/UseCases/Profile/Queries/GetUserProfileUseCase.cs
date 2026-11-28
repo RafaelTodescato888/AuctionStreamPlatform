@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using OneOf;
 using System.Diagnostics;
 using User.Domain.Constants.Service;
-using User.Domain.Dto.Profile;
+using User.Domain.Dto.Profile.Response;
 using User.Domain.Errors.Common;
 using User.Domain.Errors.Common.Authentication;
 using User.Domain.Helpers;

@@ -18,6 +18,8 @@ public static class ConfigureServicesExtensions
 
         services.AddScoped<ICachingService, CachingService>();
 
+        services.AddScoped<IGenerateNumberCodeService, GenerateNumberCodeService>();
+
         return services;
     }
 }

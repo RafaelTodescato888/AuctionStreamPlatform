@@ -1,19 +1,24 @@
 ﻿using CrossCutting.Errors.Base;
+using CrossCutting.Extensions;
 using EntityFramework.Exceptions.Common;
 using OneOf;
 using User.Domain.Dto.Register.Request;
+using User.Domain.Errors.Common;
 using User.Domain.Errors.Register;
+using User.Domain.Helpers;
+using User.Domain.Interfaces.Kafka.Producers.Register;
 using User.Domain.Interfaces.Services.Authentication.Register;
 using User.Domain.Interfaces.UoW;
 using User.Domain.Interfaces.UseCase.Register.Bidder.Commands;
-using User.Domain.Helpers;
-using User.Domain.Errors.Common;
+using User.Domain.Interfaces.UseCase.Register.Verification.Commands;
 
 namespace User.Application.UseCases.Register.Bidder.Commands;
 
 internal sealed class RegisterBidderUseCase(
     IUnitOfWork unitOfWork,
-    IPasswordHashService passwordHashService
+    IPasswordHashService passwordHashService,
+    IGenerateUserVerificationUseCase generateUserVerificationUseCase,
+    IRegisterBidderProducer registerBidderProducer
 ) : IRegisterBidderUseCase
 {
     public async Task<OneOf<bool, BaseError>> RegisterAsync(RequestRegisterUserDTO request, CancellationToken cancellationToken = default)
@@ -25,11 +30,23 @@ internal sealed class RegisterBidderUseCase(
         var hashedPassword = passwordHashService.GenerateHash(request.Password);
         request.SetHashedPassword(hashedPassword);
 
+        using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+
         try
         {
             var userId = await unitOfWork.UsersProfileRepository.CreateAsync(request, cancellationToken: cancellationToken);
             if (!userId.HasValue)
                 return new DatabaseError();
+
+            var verificationResult = await generateUserVerificationUseCase.GenerateUserVerificationAsync(userId.Value, cancellationToken);
+            if (verificationResult.IsError())
+                return verificationResult.GetError();
+
+            var producerResult = await registerBidderProducer.ProduceAsync(verificationResult.GetValue(), request.Email, cancellationToken);
+            if (producerResult.IsError())
+                return producerResult.GetError();
+
+            await transaction.CommitAsync(cancellationToken);
 
             return true;
         }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using User.Domain.Constants.Configuration;
-using User.Domain.Dto.Profile;
+using User.Domain.Dto.Profile.Response;
 using User.Domain.Dto.Register.Request;
 using User.Domain.Dto.Update.Request;
 using User.Domain.Entities;
@@ -26,7 +26,7 @@ internal sealed class UsersProfileRepository(
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return userProfile?.Id;
+        return userProfile?.UserId;
     }
 
     public Task<bool> ExistsByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
