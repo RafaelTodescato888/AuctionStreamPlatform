@@ -20,4 +20,16 @@ public class SellersApplication : BaseEntity
     [ForeignKey(nameof(ReviewedBy))]
     public Users? ReviewedByUser { get; private set; }
     #endregion
+
+    #region [Factory]
+    public static SellersApplication Create(Guid userId)
+    {
+        return new SellersApplication
+        {
+            UserId = userId,
+            Status = ESellerApplicationStatus.PENDING,
+            SubmittedAt = DateTime.UtcNow
+        };
+    }
+    #endregion
 }

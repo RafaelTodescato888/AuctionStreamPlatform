@@ -22,7 +22,7 @@ namespace User.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("User.Domain.Entities.SellersApplcation", b =>
+            modelBuilder.Entity("User.Domain.Entities.SellersApplication", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace User.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SellersApplcations");
+                    b.ToTable("SellersApplications");
                 });
 
             modelBuilder.Entity("User.Domain.Entities.Users", b =>
@@ -130,7 +130,8 @@ namespace User.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -288,7 +289,7 @@ namespace User.Infrastructure.Migrations
                     b.ToTable("UsersVerifications");
                 });
 
-            modelBuilder.Entity("User.Domain.Entities.SellersApplcation", b =>
+            modelBuilder.Entity("User.Domain.Entities.SellersApplication", b =>
                 {
                     b.HasOne("User.Domain.Entities.Users", "ReviewedByUser")
                         .WithMany()

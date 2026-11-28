@@ -11,7 +11,7 @@ internal sealed class UsersProfileConfiguration : IEntityTypeConfiguration<Users
         builder.Property(y => y.Name).HasMaxLength(50);
 
         builder.Property(y => y.Email).HasMaxLength(100);
-        builder.HasIndex(y => y.Email);
+        builder.HasIndex(y => y.Email).IsUnique();
 
         builder.Property(y => y.Bio).HasMaxLength(150);
     }

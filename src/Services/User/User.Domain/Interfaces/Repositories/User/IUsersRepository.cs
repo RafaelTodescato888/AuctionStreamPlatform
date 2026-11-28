@@ -7,6 +7,6 @@ namespace User.Domain.Interfaces.Repositories.User;
 
 public interface IUsersRepository : IBaseRepository<Users>
 {
-    Task<bool> ExistsByDocumentAsync(string document, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByDocumentOrEmailAsync(string document, string email, CancellationToken cancellationToken = default);
     Task<RequestGenerateTokenDTO?> GetUserByCredentialsAsync(RequestUserLoginDTO content, CancellationToken cancellationToken = default);
 }
