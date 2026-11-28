@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using System.Diagnostics;
+using User.Domain.Constants.BusinessDomain;
 using User.Domain.Constants.Service;
 using User.Domain.Dto.Profile.Response;
 using User.Domain.Errors.Common;
 using User.Domain.Errors.Common.Authentication;
+using User.Domain.Errors.Login;
 using User.Domain.Helpers;
 using User.Domain.Interfaces.UoW;
 using User.Domain.Interfaces.UseCase.Profile.Queries;
@@ -42,6 +44,12 @@ internal sealed class GetUserProfileUseCase(
             logger.LogWarning("[{ClassName}] on [{ServiceName}] User with ID {UserId} not found, ErrorCode: {ErrorCode}", nameof(GetUserProfileUseCase), ServiceNameConstants.Name, userId.Value, error.HttpErrorCode);
             return error;
         }
+
+        if (UserConstants.BlockedUserStatuses.Contains(user.Status))
+            return new UserIsBannedError();
+
+        if (UserConstants.ByRevisionUserStatuses.Contains(user.Status))
+            return new UserIsOnRevisionError();
 
         stopwatch.Stop();
         

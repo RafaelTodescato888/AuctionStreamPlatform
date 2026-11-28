@@ -2,4 +2,4 @@
 
 namespace User.Domain.Dto.Profile.Response;
 
-public record ResponseUserProfileDTO(string Name, string Email, string? Bio, DateOnly BirthDate, ERole Role);
+public record ResponseUserProfileDTO(string Name, string Email, string? Bio, DateOnly BirthDate, ERole Role, EUserStatus Status);

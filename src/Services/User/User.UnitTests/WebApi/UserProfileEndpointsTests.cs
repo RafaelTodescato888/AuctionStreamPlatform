@@ -26,7 +26,8 @@ public class UserProfileEndpointsTests
             "test@email.com",
             "Test bio",
             new DateOnly(2000, 1, 1),
-            ERole.BIDDER
+            ERole.BIDDER,
+            EUserStatus.ACTIVE
         );
 
         var useCaseMock = new Mock<IGetUserProfileUseCase>();
