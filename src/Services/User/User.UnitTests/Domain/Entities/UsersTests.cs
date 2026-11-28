@@ -17,7 +17,7 @@ public class UsersTests
         Assert.Equal(document, user.Document);
         Assert.Equal(hashedPassword, user.HashPassword);
         Assert.Equal(role, user.Role);
-        Assert.Equal(EUserStatus.ACTIVE, user.Status);
+        Assert.Equal(EUserStatus.ACTIVATION_PENDING, user.Status);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class UsersTests
     {
         var user = new Users("12345678900", "hashed-password", role);
 
-        Assert.Equal(EUserStatus.ACTIVE, user.Status);
+        Assert.Equal(EUserStatus.ACTIVATION_PENDING, user.Status);
     }
 
     [Fact]

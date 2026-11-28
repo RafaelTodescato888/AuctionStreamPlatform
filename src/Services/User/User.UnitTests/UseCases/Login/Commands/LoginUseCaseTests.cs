@@ -1,6 +1,9 @@
 ﻿using CrossCutting.Errors.Base;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using User.Application.UseCases.Login.Commands;
+using User.Application.UseCases.Register.Seller.Commands;
 using User.Domain.Dto.Common;
 using User.Domain.Dto.Login.Request;
 using User.Domain.Dto.Register.Projections;
@@ -21,6 +24,7 @@ public class LoginUseCaseTests
     private readonly Mock<IPasswordHashService> _passwordHashServiceMock;
     private readonly Mock<IGenerateTokenService> _generateTokenServiceMock;
     private readonly Mock<ILoginWrongPasswordUseCase> _loginWrongPasswordUseCaseMock;
+    private readonly ILogger<LoginUseCase> _logger;
 
     private readonly LoginUseCase _useCase;
 
@@ -30,12 +34,14 @@ public class LoginUseCaseTests
         _passwordHashServiceMock = new Mock<IPasswordHashService>();
         _generateTokenServiceMock = new Mock<IGenerateTokenService>();
         _loginWrongPasswordUseCaseMock = new Mock<ILoginWrongPasswordUseCase>();
+        _logger = NullLogger<LoginUseCase>.Instance;
 
         _useCase = new LoginUseCase(
             _unitOfWorkMock.Object,
             _passwordHashServiceMock.Object,
             _generateTokenServiceMock.Object,
-            _loginWrongPasswordUseCaseMock.Object
+            _loginWrongPasswordUseCaseMock.Object,
+            _logger
         );
     }
 
