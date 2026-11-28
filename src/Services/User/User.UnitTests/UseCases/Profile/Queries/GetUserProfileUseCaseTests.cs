@@ -50,7 +50,8 @@ public class GetUserProfileUseCaseTests
             "john@email.com",
             "Software Developer",
             new DateOnly(2000, 1, 1),
-            ERole.BIDDER
+            ERole.BIDDER,
+            EUserStatus.ACTIVE
         );
 
         var httpContext = CreateAuthenticatedHttpContext(userId);
@@ -215,7 +216,8 @@ public class GetUserProfileUseCaseTests
             "john@email.com",
             null,
             new DateOnly(2000, 1, 1),
-            ERole.ADMIN
+            ERole.ADMIN,
+            EUserStatus.ACTIVE
         );
 
         var httpContext = CreateAuthenticatedHttpContext(userId);

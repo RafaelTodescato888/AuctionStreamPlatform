@@ -42,7 +42,7 @@ internal sealed class UsersProfileRepository(
             return cachedUser;
 
         var user = await GetAll(u => u.UserId == id)
-            .Select(u => new ResponseUserProfileDTO(u.Name, u.Email, u.Bio, u.BirthDate, u.User.Role))
+            .Select(u => new ResponseUserProfileDTO(u.Name, u.Email, u.Bio, u.BirthDate, u.User.Role, u.User.Status))
             .FirstOrDefaultAsync(cancellationToken);
 
         if (user != null)
