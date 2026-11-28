@@ -1,7 +1,11 @@
-﻿using CrossCutting.Errors.Base;
+﻿using Castle.Core.Logging;
+using CrossCutting.Errors.Base;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using OneOf;
+using User.Application.UseCases.Profile.Queries;
 using User.Application.UseCases.Register.Bidder.Commands;
 using User.Domain.Dto.Register.Request;
 using User.Domain.Dto.Register.Response;
@@ -27,6 +31,7 @@ public class RegisterBidderUseCaseTests
     private readonly Mock<IUsersRepository> _userRepositoryMock = new();
     private readonly Mock<IUsersProfileRepository> _usersProfileRepositoryMock = new();
     private readonly Mock<IDbContextTransaction> _transactionMock = new();
+    private readonly ILogger<RegisterBidderUseCase> _logger = NullLogger<RegisterBidderUseCase>.Instance;
 
     private readonly RegisterBidderUseCase _useCase;
 
@@ -59,7 +64,8 @@ public class RegisterBidderUseCaseTests
             _unitOfWorkMock.Object,
             _passwordHashServiceMock.Object,
             _generateUserVerificationMock.Object,
-            _registerBidderProducerMock.Object
+            _registerBidderProducerMock.Object,
+            _logger
         );
     }
 

@@ -1,5 +1,7 @@
 ﻿using CrossCutting.Errors.Base;
 using EntityFramework.Exceptions.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using OneOf;
 using User.Application.UseCases.Register.Seller.Commands;
@@ -26,6 +28,7 @@ public class RegisterSellerUseCaseTests
     private readonly Mock<IUsersProfileRepository> _usersProfileRepositoryMock = new();
     private readonly Mock<ISellersApplicationRepository> _sellersApplicationRepositoryMock = new();
     private readonly Mock<IRegisterSellerProducer> _registerSellerProducerMock = new();
+    private readonly ILogger<RegisterSellerUseCase> _logger = NullLogger<RegisterSellerUseCase>.Instance;
 
     private readonly RegisterSellerUseCase _useCase;
 
@@ -63,7 +66,8 @@ public class RegisterSellerUseCaseTests
         _useCase = new RegisterSellerUseCase(
             _unitOfWorkMock.Object,
             _passwordHashServiceMock.Object,
-            _registerSellerProducerMock.Object
+            _registerSellerProducerMock.Object,
+            _logger
         );
     }
 
