@@ -53,6 +53,8 @@ internal sealed class RegisterSellerUseCase(
             if (producerResult.IsError())
                 return producerResult.GetError();
 
+            await transaction.CommitAsync(cancellationToken);
+
             return true;
         }
         catch (UniqueConstraintException)
