@@ -20,7 +20,7 @@ public static class ConfigureAuthenticationExtensions
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(configurations.GetValue<string>("AppConfig:JwtSecret")!)
+                        Encoding.UTF8.GetBytes(configurations.GetValue<string>("TokenGenerationConfig:JwtSecret")!)
                     ),
                     RoleClaimType = ClaimTypes.Role
                 };

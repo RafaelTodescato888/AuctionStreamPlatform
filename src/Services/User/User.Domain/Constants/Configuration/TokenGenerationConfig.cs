@@ -1,6 +1,6 @@
 ﻿namespace User.Domain.Constants.Configuration;
 
-public class AppConfig
+public class TokenGenerationConfig
 {
     public int MaxBytes { get; set; }
     public int LanesNumber { get; set; }

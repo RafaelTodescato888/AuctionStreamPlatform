@@ -8,6 +8,9 @@ internal static class UseCaseExtensions
 {
     internal static IServiceCollection AddLoginUseCases(this IServiceCollection services)
     {
-        return services.AddTransient<ILoginUseCase, LoginUseCase>();
+        services.AddTransient<ILoginWrongPasswordUseCase, LoginWrongPasswordUseCase>();
+        services.AddTransient<ILoginUseCase, LoginUseCase>();
+
+        return services;
     }
 }

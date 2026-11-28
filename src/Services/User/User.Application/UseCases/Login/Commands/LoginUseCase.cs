@@ -15,7 +15,8 @@ namespace User.Application.UseCases.Login.Commands;
 internal sealed class LoginUseCase(
     IUnitOfWork unitOfWork,
     IPasswordHashService passwordHashService,
-    IGenerateTokenService generateTokenService
+    IGenerateTokenService generateTokenService,
+    ILoginWrongPasswordUseCase loginWrongPasswordUseCase
 ) : ILoginUseCase
 {
     public async Task<OneOf<ResponseUserLoginDTO, BaseError>> LoginAsync(RequestUserLoginDTO content, CancellationToken cancellationToken = default)
@@ -42,9 +43,17 @@ internal sealed class LoginUseCase(
         if (userToLogin == null)
             return new UserOrPasswordIsIncorrectError();
 
-        if (userToLogin.Status == EUserStatus.BANNED)
+        if (userToLogin.HashPassword != content.Password)
+        {
+            return await loginWrongPasswordUseCase.IncrementFailedLoginAttemptsOrBlockUserAsync(
+                userToLogin.User.Id,
+                userToLogin.FailedLoginAttempts,
+                cancellationToken);
+        }
+
+        if (userToLogin.User.Status == EUserStatus.BANNED)
             return new UserIsBannedError();
 
-        return userToLogin;
+        return userToLogin.User;
     }
 }

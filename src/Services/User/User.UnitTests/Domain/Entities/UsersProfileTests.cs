@@ -39,7 +39,7 @@ public class UsersProfileTests
     [Fact]
     public void UsersProfile_Should_Create_Admin_Profile_When_Created_With_AdminConfig()
     {
-        var adminConfig = new AdminConfig
+        var adminConfig = new AdminCredentialsConfig
         {
             Name = "Admin",
             Email = "admin@email.com",

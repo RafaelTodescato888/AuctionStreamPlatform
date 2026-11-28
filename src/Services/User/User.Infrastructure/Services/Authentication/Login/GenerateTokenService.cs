@@ -12,7 +12,7 @@ using User.Domain.Interfaces.Services.Authentication.Login;
 namespace User.Infrastructure.Services.Authentication.Login;
 
 internal sealed class GenerateTokenService(
-    IOptions<AppConfig> configurations
+    IOptions<TokenGenerationConfig> configurations
 ) : IGenerateTokenService
 {
     public RefreshTokenDTO GenerateRefreshToken()

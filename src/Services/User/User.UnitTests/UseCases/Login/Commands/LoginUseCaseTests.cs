@@ -3,8 +3,11 @@ using Moq;
 using User.Application.UseCases.Login.Commands;
 using User.Domain.Dto.Common;
 using User.Domain.Dto.Login.Request;
+using User.Domain.Dto.Register.Projections;
 using User.Domain.Enums;
 using User.Domain.Errors.Login;
+using User.Domain.Interfaces.Repositories.User;
+using User.Domain.Interfaces.Repositories.UserSession;
 using User.Domain.Interfaces.Services.Authentication.Login;
 using User.Domain.Interfaces.Services.Authentication.Register;
 using User.Domain.Interfaces.UoW;
@@ -49,12 +52,12 @@ public class LoginUseCaseTests
 
         var content = new RequestUserLoginDTO(email, password);
 
-        var userInformations = new RequestGenerateTokenDTO(
+        var userInformations = new UserCredentialsProjection(new RequestGenerateTokenDTO(
             userId,
             "John Doe",
             ERole.BIDDER,
             EUserStatus.ACTIVE
-        );
+        ), hashedPassword);
 
         var userRepositoryMock = new Mock<
             User.Domain.Interfaces.Repositories.User.IUsersRepository
@@ -96,7 +99,7 @@ public class LoginUseCaseTests
             .ReturnsAsync(true);
 
         _generateTokenServiceMock
-            .Setup(g => g.GenerateToken(userInformations))
+            .Setup(g => g.GenerateToken(userInformations.User))
             .Returns(accessToken);
 
         var result = await _useCase.LoginAsync(content);
@@ -132,7 +135,7 @@ public class LoginUseCaseTests
         );
 
         _generateTokenServiceMock.Verify(
-            g => g.GenerateToken(userInformations),
+            g => g.GenerateToken(userInformations.User),
             Times.Once
         );
     }
@@ -162,7 +165,7 @@ public class LoginUseCaseTests
                 content,
                 It.IsAny<CancellationToken>()
             ))
-            .ReturnsAsync((RequestGenerateTokenDTO?)null);
+            .ReturnsAsync((UserCredentialsProjection?)null);
 
         var result = await _useCase.LoginAsync(content);
 
@@ -185,11 +188,14 @@ public class LoginUseCaseTests
             "password"
         );
 
-        var userInformations = new RequestGenerateTokenDTO(
-            userId,
-            "John Doe",
-            ERole.BIDDER,
-            EUserStatus.BANNED
+        var userInformations = new UserCredentialsProjection(
+            new RequestGenerateTokenDTO(
+                userId,
+                "John Doe",
+                ERole.BIDDER,
+                EUserStatus.BANNED
+            ),
+            "hashed-password"
         );
 
         var userRepositoryMock = new Mock<
@@ -232,12 +238,12 @@ public class LoginUseCaseTests
             "password"
         );
 
-        var userInformations = new RequestGenerateTokenDTO(
+        var userInformations = new UserCredentialsProjection(new RequestGenerateTokenDTO(
             userId,
             "John Doe",
             ERole.BIDDER,
             EUserStatus.ACTIVE
-        );
+        ), "hashed-password");
 
         var refreshToken = new RefreshTokenDTO(
             "refresh-token",
@@ -245,11 +251,11 @@ public class LoginUseCaseTests
         );
 
         var userRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.User.IUsersRepository
+            IUsersRepository
         >();
 
         var sessionRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.UserSession.IUsersSessionRepository
+            IUsersSessionRepository
         >();
 
         _unitOfWorkMock
@@ -305,12 +311,12 @@ public class LoginUseCaseTests
             "password"
         );
 
-        var userInformations = new RequestGenerateTokenDTO(
+        var userInformations = new UserCredentialsProjection(new RequestGenerateTokenDTO(
             userId,
             "John Doe",
             ERole.BIDDER,
             EUserStatus.ACTIVE
-        );
+        ), "hashed-password");
 
         var refreshToken = new RefreshTokenDTO(
             "refresh-token",
@@ -318,11 +324,11 @@ public class LoginUseCaseTests
         );
 
         var userRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.User.IUsersRepository
+            IUsersRepository
         >();
 
         var sessionRepositoryMock = new Mock<
-            User.Domain.Interfaces.Repositories.UserSession.IUsersSessionRepository
+            IUsersSessionRepository
         >();
 
         _unitOfWorkMock
@@ -357,7 +363,7 @@ public class LoginUseCaseTests
             .ReturnsAsync(true);
 
         _generateTokenServiceMock
-            .Setup(g => g.GenerateToken(userInformations))
+            .Setup(g => g.GenerateToken(userInformations.User))
             .Returns("access-token");
 
         await _useCase.LoginAsync(content, cancellationToken);

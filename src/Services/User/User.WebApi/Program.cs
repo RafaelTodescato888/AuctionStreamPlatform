@@ -12,8 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
-builder.Services.Configure<AdminConfig>(builder.Configuration.GetSection("AdminConfig"));
+builder.Services.Configure<TokenGenerationConfig>(builder.Configuration.GetSection(nameof(TokenGenerationConfig)));
+builder.Services.Configure<AdminCredentialsConfig>(builder.Configuration.GetSection(nameof(AdminCredentialsConfig)));
+builder.Services.Configure<LoginAttemptsConfig>(builder.Configuration.GetSection(nameof(LoginAttemptsConfig)));
 
 builder.Services.AddOpenApi();
 

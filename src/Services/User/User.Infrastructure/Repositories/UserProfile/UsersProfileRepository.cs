@@ -16,7 +16,7 @@ namespace User.Infrastructure.Repositories.UserProfile;
 internal sealed class UsersProfileRepository(
     UserContext context,
     ICachingService cachingService,
-    IOptions<AppConfig> options) : BaseRepository<UsersProfile>(context), IUsersProfileRepository
+    IOptions<TokenGenerationConfig> options) : BaseRepository<UsersProfile>(context), IUsersProfileRepository
 {
     public async Task<Guid?> CreateAsync(RequestRegisterUserDTO request, ERole role = ERole.BIDDER, CancellationToken cancellationToken = default)
     {

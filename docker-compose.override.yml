@@ -4,7 +4,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - GATEWAY_API_PORT=${GATEWAY_API_PORT}
       - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
-      - AppConfig__JwtSecret=${AppConfig__JwtSecret}
+      - TokenGenerationConfig__JwtSecret=${TokenGenerationConfig__JwtSecret}
     ports:
       - "${GATEWAY_API_PORT}:${DEFAULT_HTTP_PORT}"
     volumes:
@@ -19,17 +19,18 @@ services:
       - REDIS_DATA_SOURCE=${REDIS_DATA_SOURCE}
       - USER_API_PORT=${USER_API_PORT}
       - DEFAULT_HTTP_PORT=${DEFAULT_HTTP_PORT}
-      - AppConfig__MaxBytes=${AppConfig__MaxBytes}
-      - AppConfig__LanesNumber=${AppConfig__LanesNumber}
-      - AppConfig__MemorySize=${AppConfig__MemorySize}
-      - AppConfig__Iterations=${AppConfig__Iterations}
-      - AppConfig__Hash=${AppConfig__Hash}
-      - AppConfig__JwtSecret=${AppConfig__JwtSecret}
-      - AppConfig__DefaultExpiration=${AppConfig__DefaultExpiration}
-      - AdminConfig__Name=${AdminConfig__Name}
-      - AdminConfig__Email=${AdminConfig__Email}
-      - AdminConfig__Document=${AdminConfig__Document}
-      - AdminConfig__Password=${AdminConfig__Password}
+      - TokenGenerationConfig__MaxBytes=${TokenGenerationConfig__MaxBytes}
+      - TokenGenerationConfig__LanesNumber=${TokenGenerationConfig__LanesNumber}
+      - TokenGenerationConfig__MemorySize=${TokenGenerationConfig__MemorySize}
+      - TokenGenerationConfig__Iterations=${TokenGenerationConfig__Iterations}
+      - TokenGenerationConfig__Hash=${TokenGenerationConfig__Hash}
+      - TokenGenerationConfig__JwtSecret=${TokenGenerationConfig__JwtSecret}
+      - TokenGenerationConfig__DefaultExpiration=${TokenGenerationConfig__DefaultExpiration}
+      - AdminCredentialsConfig__Name=${AdminCredentialsConfig__Name}
+      - AdminCredentialsConfig__Email=${AdminCredentialsConfig__Email}
+      - AdminCredentialsConfig__Document=${AdminCredentialsConfig__Document}
+      - AdminCredentialsConfig__Password=${AdminCredentialsConfig__Password}
+      - LoginAttemptsConfig__MaxFailedLoginAttempts=${LoginAttemptsConfig__MaxFailedLoginAttempts}
       - Kafka__Consumer__Config__BootstrapServers=kafka:9092
       - Kafka__Producer__Config__BootstrapServers=kafka:9092
       - Kafka__Consumer__Config__AllowAutoCreateTopics=true

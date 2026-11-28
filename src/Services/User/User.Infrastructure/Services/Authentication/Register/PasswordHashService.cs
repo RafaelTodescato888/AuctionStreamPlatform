@@ -7,7 +7,7 @@ using User.Domain.Interfaces.Services.Authentication.Register;
 namespace User.Infrastructure.Services.Authentication.Register;
 
 internal sealed class PasswordHashService(
-    IOptions<AppConfig> configurations
+    IOptions<TokenGenerationConfig> configurations
 ) : IPasswordHashService
 {
     public string GenerateHash(string password)

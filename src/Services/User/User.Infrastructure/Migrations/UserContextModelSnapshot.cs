@@ -75,6 +75,9 @@ namespace User.Infrastructure.Migrations
                         .HasMaxLength(14)
                         .HasColumnType("character varying(14)");
 
+                    b.Property<short>("FailedLoginAttempts")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("HashPassword")
                         .IsRequired()
                         .HasColumnType("text");

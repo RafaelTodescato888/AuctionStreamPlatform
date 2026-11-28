@@ -19,7 +19,7 @@ internal static class UsersProfileSeedExtensions
             {
                 if (!context.Set<Users>().Any(u => u.Role == ERole.ADMIN))
                 {
-                    var adminConfigOptions = serviceProvider.GetRequiredService<IOptions<AdminConfig>>();
+                    var adminConfigOptions = serviceProvider.GetRequiredService<IOptions<AdminCredentialsConfig>>();
 
                     if (adminConfigOptions.Value == null)
                         throw new InvalidOperationException("Não foi possível encontrar a configuração padrão de Seed para Administrador do Sistema.");
