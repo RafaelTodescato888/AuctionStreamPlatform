@@ -4,9 +4,12 @@ using Moq;
 using OneOf;
 using User.Application.UseCases.Register.Seller.Commands;
 using User.Domain.Dto.Register.Request;
+using User.Domain.Dto.Register.Response;
 using User.Domain.Enums;
 using User.Domain.Errors.Common;
 using User.Domain.Errors.Register;
+using User.Domain.Interfaces.Kafka.Producers.Register;
+using User.Domain.Interfaces.Repositories.SellerApplication;
 using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.Services.Authentication.Register;
@@ -21,6 +24,8 @@ public class RegisterSellerUseCaseTests
 
     private readonly Mock<IUsersRepository> _userRepositoryMock = new();
     private readonly Mock<IUsersProfileRepository> _usersProfileRepositoryMock = new();
+    private readonly Mock<ISellersApplicationRepository> _sellersApplicationRepositoryMock = new();
+    private readonly Mock<IRegisterSellerProducer> _registerSellerProducerMock = new();
 
     private readonly RegisterSellerUseCase _useCase;
 
@@ -34,8 +39,13 @@ public class RegisterSellerUseCaseTests
             .SetupGet(x => x.UsersProfileRepository)
             .Returns(_usersProfileRepositoryMock.Object);
 
+        _unitOfWorkMock
+            .SetupGet(x => x.SellersApplicationRepository)
+            .Returns(_sellersApplicationRepositoryMock.Object);
+
         _userRepositoryMock
-            .Setup(x => x.ExistsByDocumentAsync(
+            .Setup(x => x.ExistsByDocumentOrEmailAsync(
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -44,9 +54,16 @@ public class RegisterSellerUseCaseTests
             .Setup(x => x.GenerateHash(It.IsAny<string>()))
             .Returns("hashed-password");
 
+        _registerSellerProducerMock
+            .Setup(x => x.ProduceAsync(
+                It.IsAny<RequestSellerCreationProducerDTO>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((OneOf<bool, BaseError>)true);
+
         _useCase = new RegisterSellerUseCase(
             _unitOfWorkMock.Object,
-            _passwordHashServiceMock.Object
+            _passwordHashServiceMock.Object,
+            _registerSellerProducerMock.Object
         );
     }
 
@@ -144,8 +161,9 @@ public class RegisterSellerUseCaseTests
         var request = CreateValidRequest();
 
         _userRepositoryMock
-            .Setup(x => x.ExistsByDocumentAsync(
+            .Setup(x => x.ExistsByDocumentOrEmailAsync(
                 request.Document,
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
@@ -175,6 +193,7 @@ public class RegisterSellerUseCaseTests
     {
         var request = CreateValidRequest();
         var userId = Guid.NewGuid();
+        var sellerApplicationId = Guid.NewGuid();
 
         _usersProfileRepositoryMock
             .Setup(x => x.CreateAsync(
@@ -182,6 +201,12 @@ public class RegisterSellerUseCaseTests
                 ERole.SELLER,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(userId);
+
+        _sellersApplicationRepositoryMock
+            .Setup(x => x.CreateAsync(
+                userId,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(sellerApplicationId);
 
         var result = await _useCase.RegisterAsync(request);
 
@@ -198,6 +223,12 @@ public class RegisterSellerUseCaseTests
             x => x.CreateAsync(
                 request,
                 ERole.SELLER,
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        _sellersApplicationRepositoryMock.Verify(
+            x => x.CreateAsync(
+                userId,
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -269,11 +300,18 @@ public class RegisterSellerUseCaseTests
                 cancellationToken))
             .ReturnsAsync(Guid.NewGuid());
 
+        _sellersApplicationRepositoryMock
+            .Setup(x => x.CreateAsync(
+                It.IsAny<Guid>(),
+                cancellationToken))
+            .ReturnsAsync(Guid.NewGuid());
+
         await _useCase.RegisterAsync(request, cancellationToken);
 
         _userRepositoryMock.Verify(
-            x => x.ExistsByDocumentAsync(
+            x => x.ExistsByDocumentOrEmailAsync(
                 request.Document,
+                It.IsAny<string>(),
                 cancellationToken),
             Times.Once);
 

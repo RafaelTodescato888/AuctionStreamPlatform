@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using User.Domain.Interfaces.Kafka.Producers.Register;
 using User.Domain.Interfaces.Repositories.Base;
+using User.Domain.Interfaces.Repositories.SellerApplication;
 using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.Repositories.UserSession;
@@ -18,6 +19,7 @@ using User.Infrastructure.Context;
 using User.Infrastructure.Kafka.Envelopes.Register;
 using User.Infrastructure.Kafka.Producers.Register;
 using User.Infrastructure.Repositories.Base;
+using User.Infrastructure.Repositories.SellerApplication;
 using User.Infrastructure.Repositories.User;
 using User.Infrastructure.Repositories.UserProfile;
 using User.Infrastructure.Repositories.UserSession;
@@ -66,6 +68,7 @@ public static class ConfigureInfrastructureExtensions
         services.AddScoped<IUsersRepository, UsersRepository>();
         services.AddScoped<IUsersSessionRepository, UsersSessionRepository>();
         services.AddScoped<IUsersVerificationRepository, UsersVerificationRepository>();
+        services.AddScoped<ISellersApplicationRepository, SellersApplicationRepository>();
 
         return services;
     }
@@ -105,12 +108,14 @@ public static class ConfigureInfrastructureExtensions
         services.Configure<KafkaProducerOptions>(configuration.GetSection("Kafka:Producer"));
 
         services.AddKafkaProducer<BidderUserCreatedEnvelope>(configuration);
+        services.AddKafkaProducer<SellerUserCreatedEnvelope>(configuration);
         return services;
     }
 
     private static IServiceCollection AddProducerServices(this IServiceCollection services)
     {
         services.AddScoped<IRegisterBidderProducer, RegisterBidderProducer>();
+        services.AddScoped<IRegisterSellerProducer, RegisterSellerProducer>();
 
         return services;
     }

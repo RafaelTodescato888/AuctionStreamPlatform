@@ -15,7 +15,7 @@ public class BidderUserCreatedEnvelope : IRetriableEnvelope<string, BidderUserCr
 
     public bool IsRetrying { get; set; }
 
-    public string TopicName { get; } = TopicConstants.UserCreatedTopic;
+    public string TopicName { get; } = TopicConstants.BidderUserCreatedTopic;
 
     public IDictionary<string, byte[]> Headers { get; set; } = null!;
 }

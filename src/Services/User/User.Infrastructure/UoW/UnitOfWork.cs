@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using User.Domain.Interfaces.Repositories.SellerApplication;
 using User.Domain.Interfaces.Repositories.User;
 using User.Domain.Interfaces.Repositories.UserProfile;
 using User.Domain.Interfaces.Repositories.UserSession;
@@ -13,13 +14,15 @@ internal sealed class UnitOfWork(
     IUsersProfileRepository usersProfileRepository,
     IUsersRepository usersRepository,
     IUsersSessionRepository usersSessionRepository,
-    IUsersVerificationRepository usersVerificationRepository
+    IUsersVerificationRepository usersVerificationRepository,
+    ISellersApplicationRepository sellersApplicationRepository
 ) : IUnitOfWork
 {
     public IUsersProfileRepository UsersProfileRepository { get; private set; } = usersProfileRepository;
     public IUsersRepository UserRepository { get; private set; } = usersRepository;
     public IUsersSessionRepository UsersSessionRepository { get; private set; } = usersSessionRepository;
     public IUsersVerificationRepository UsersVerificationRepository { get; private set; } = usersVerificationRepository;
+    public ISellersApplicationRepository SellersApplicationRepository { get; private set; } = sellersApplicationRepository;
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken ct)
     {

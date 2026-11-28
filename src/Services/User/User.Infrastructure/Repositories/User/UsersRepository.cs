@@ -9,9 +9,9 @@ namespace User.Infrastructure.Repositories.User;
 
 internal sealed class UsersRepository(UserContext context) : BaseRepository<Users>(context), IUsersRepository
 {
-    public Task<bool> ExistsByDocumentAsync(string document, CancellationToken cancellationToken = default)
+    public Task<bool> ExistsByDocumentOrEmailAsync(string document, string email, CancellationToken cancellationToken = default)
     {
-        return AnyAsync(u => u.Document == document, cancellationToken);
+        return AnyAsync(u => u.Document == document || u.UsersProfile!.Email == email, cancellationToken);
     }
 
     public Task<RequestGenerateTokenDTO?> GetUserByCredentialsAsync(RequestUserLoginDTO content, CancellationToken cancellationToken = default)

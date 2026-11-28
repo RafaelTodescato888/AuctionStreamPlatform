@@ -76,7 +76,7 @@ internal sealed class RegisterBidderUseCase(
         if(string.IsNullOrWhiteSpace(request.Password))
             return new PasswordIsRequiredError();
 
-        if(await unitOfWork.UserRepository.ExistsByDocumentAsync(request.Document, cancellationToken))
+        if(await unitOfWork.UserRepository.ExistsByDocumentOrEmailAsync(request.Document, request.Email, cancellationToken))
             return new UserAlreadyRegisteredError();
 
         return null;

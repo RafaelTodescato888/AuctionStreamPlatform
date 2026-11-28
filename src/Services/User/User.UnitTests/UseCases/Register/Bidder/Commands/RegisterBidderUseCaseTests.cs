@@ -45,7 +45,8 @@ public class RegisterBidderUseCaseTests
             .ReturnsAsync(_transactionMock.Object);
 
         _userRepositoryMock
-            .Setup(x => x.ExistsByDocumentAsync(
+            .Setup(x => x.ExistsByDocumentOrEmailAsync(
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -155,8 +156,9 @@ public class RegisterBidderUseCaseTests
         var request = CreateValidRequest();
 
         _userRepositoryMock
-            .Setup(x => x.ExistsByDocumentAsync(
+            .Setup(x => x.ExistsByDocumentOrEmailAsync(
                 request.Document,
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
@@ -363,8 +365,9 @@ public class RegisterBidderUseCaseTests
         await _useCase.RegisterAsync(request, cancellationToken);
 
         _userRepositoryMock.Verify(
-            x => x.ExistsByDocumentAsync(
+            x => x.ExistsByDocumentOrEmailAsync(
                 request.Document,
+                It.IsAny<string>(),
                 cancellationToken),
             Times.Once);
 
