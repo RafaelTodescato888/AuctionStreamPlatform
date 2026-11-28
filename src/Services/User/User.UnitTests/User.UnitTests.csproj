@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.10" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.21.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -20,12 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="WebApi\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\User.Application\User.Application.csproj" />
     <ProjectReference Include="..\User.Domain\User.Domain.csproj" />
+    <ProjectReference Include="..\User.WebApi\User.WebApi.csproj" />
   </ItemGroup>
 
 </Project>
